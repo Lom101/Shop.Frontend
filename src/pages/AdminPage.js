@@ -22,10 +22,10 @@ const AdminPage = () => {
                     className="mt-4 p-3"
                     onClick={()=>setProductVisible(true)}
                 >
-                    Добавить устройство
+                    Добавить товар
                 </Button>
                 <CreateCategory show={categoryVisible} onHide={()=> setCategoryVisible(false)} />
-                <CreateProduct show={setProductVisible} onHide={()=> setProductVisible(false)} />
+                <CreateProduct show={productVisible} onHide={()=> setProductVisible(false)} />
             </div>
 
         </Container>

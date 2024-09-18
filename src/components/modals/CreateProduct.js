@@ -40,7 +40,7 @@ const CreateProduct = observer (({show, onHide}) => {
             <Modal.Body>
                 <Form>
                     <Dropdown className="mt-2 mb-2">
-                        <Dropdown.Toggle>{productStore.selectedCategory.name || 'Выберите категорию товара'}</Dropdown.Toggle>
+                        <Dropdown.Toggle>{productStore.selectedCategory?.name || 'Выберите категорию товара'}</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {productStore.Categories?.map(category =>
                                 <Dropdown.Item

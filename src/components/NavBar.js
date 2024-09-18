@@ -18,6 +18,14 @@ const NavBar = observer(() => {
         logout();
     };
 
+    const isAdmin = () => {
+        const token = localStorage.getItem('authToken');
+        if (!token) return false;
+
+        const payload = JSON.parse(atob(token.split('.')[1])); // декодирование JWT
+        return payload.role === 'Admin'; // предполагается, что у вас есть поле 'role'
+    };
+
     return (
         <Navbar bg="dark" variant="dark" className="navbar-store">
             <Container>
@@ -27,13 +35,15 @@ const NavBar = observer(() => {
                 <Nav className="ml-auto">
                     {userStore.isAuth ? (
                         <>
-                            <Button
-                                className="navbar-button"
-                                variant="outline-light"
-                                onClick={() => navigate(ADMIN_ROUTE)}
-                            >
-                                Админ панель
-                            </Button>
+                            {isAdmin() && (
+                                <Button
+                                    className="navbar-button"
+                                    variant="outline-light"
+                                    onClick={() => navigate(ADMIN_ROUTE)}
+                                >
+                                    Админ панель
+                                </Button>
+                            )}
                             <Button
                                 className="btn-login"
                                 variant="outline-light"
