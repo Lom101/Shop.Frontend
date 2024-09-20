@@ -7,6 +7,7 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/navbar.css';
 import { logout } from '../http/userAPI';
+import CurtainMenu from '../pages/CurtainMenu';
 
 const NavBar = observer(() => {
     const { userStore } = useContext(Context);
@@ -32,34 +33,40 @@ const NavBar = observer(() => {
                 <NavLink className="logo-title" to={SHOP_ROUTE}>
                     Магазин
                 </NavLink>
-                <Nav className="ml-auto">
+                <Nav className="ml-auto d-flex align-items-center">
                     {userStore.isAuth ? (
                         <>
                             {isAdmin() && (
-                                <Button
-                                    className="navbar-button"
-                                    variant="outline-light"
-                                    onClick={() => navigate(ADMIN_ROUTE)}
-                                >
-                                    Админ панель
-                                </Button>
+                                <Nav.Item>
+                                    <Nav.Link
+                                        className="navbar-button"
+                                        onClick={() => navigate(ADMIN_ROUTE)}
+                                    >
+                                        Админ панель
+                                    </Nav.Link>
+                                </Nav.Item>
                             )}
-                            <Button
-                                className="btn-login"
-                                variant="outline-light"
-                                onClick={logout_user}
-                            >
-                                Выйти
-                            </Button>
+                            <Nav.Item>
+                                <Nav.Link
+                                    className="btn-login"
+                                    onClick={logout_user}
+                                >
+                                    Выйти
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <CurtainMenu />
+                            </Nav.Item>
                         </>
                     ) : (
-                        <Button
-                            className="navbar-button"
-                            variant="outline-light"
-                            onClick={() => navigate(LOGIN_ROUTE)}
-                        >
-                            Авторизация
-                        </Button>
+                        <Nav.Item>
+                            <Nav.Link
+                                className="navbar-button"
+                                onClick={() => navigate(LOGIN_ROUTE)}
+                            >
+                                Авторизация
+                            </Nav.Link>
+                        </Nav.Item>
                     )}
                 </Nav>
             </Container>

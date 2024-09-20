@@ -17,7 +17,7 @@ export default class UserStore {
     }
     
     loadInitialData(){
-        // Попробуйте получить информацию о пользователе из локального хранилища при инициализации
+        // Получаем информацию о пользователе из локального хранилища при инициализации
         const savedUser = localStorage.getItem('authToken');
         console.log("токен - ", savedUser);
         if (savedUser) {

@@ -2,11 +2,12 @@ import React, {useContext, useEffect} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
 import CategoryBar from "../components/CategoryBar";
 import ProductList from "../components/ProductList";
-import Page from "../components/Pages";
 import '../assets/css/shop.css';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {fetchCategories, fetchProductsByCategory, fetchTotalCountOfProductsWithFiltration} from "../http/productAPI";
+
+import PagesPagination from "../components/PagesPagination"
 
 const Shop = observer (() => {
     const  {productStore} = useContext(Context);
@@ -41,10 +42,6 @@ const Shop = observer (() => {
     }, [productStore.page, productStore.selectedCategory]); // Dependencies: page and selectedCategory
 
 
-    // нужно достать количество всех элементов
-    // и присвоить productStore.setTotalCount количество элементов в категории, либо если передаем null
-    // то получим количество всех товаров (если пользователь выбрал none)
-
     return (
         <Container>
             <Row className="shop-content">
@@ -53,7 +50,8 @@ const Shop = observer (() => {
                 </Col>
                 <Col md={9}>
                     <ProductList/>
-                    <Page />
+                    {/* <Page /> */}
+                    <PagesPagination/>
                 </Col>
             </Row>
         </Container>

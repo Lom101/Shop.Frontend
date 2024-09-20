@@ -1,21 +1,40 @@
-import React, {useState} from 'react';
-import {Button, Form, Modal} from "react-bootstrap";
-import {createCategory} from "../../http/productAPI";
+import React, { useState } from 'react';
+import { Button, Form, Modal, Alert } from "react-bootstrap";
+import { createCategory } from "../../http/productAPI";
 
-const CreateCategory = ({show, onHide}) => {
-
+const CreateCategory = ({ show, onHide }) => {
     const [valueCategory, setValueCategory] = useState('');
-    const addCategory = () => {
-        createCategory({name: valueCategory}).then(data => {
+    const [error, setError] = useState(null);
+
+    const addCategory = async () => {
+        try {
+            if (!valueCategory.trim()) {
+                setError("Пожалуйста, введите название категории");
+                return;
+            }
+
+            const data = await createCategory({ name: valueCategory });
             setValueCategory('');
+            setError(null);
             onHide();
-        })
+            console.log('Категория успешно добавлена:', data);
+        } catch (error) {
+            console.error('Ошибка при добавлении категории:', error);
+            setError("Произошла ошибка при добавлении категории. Попробуйте снова.");
+        }
     }
+
+    // Функция для сброса состояния при закрытии модального окна
+    const handleCloseModal = () => {
+        setValueCategory('');
+        setError(null);
+        onHide();
+    }   
 
     return (
         <Modal
             show={show}
-            onHide={onHide}
+            onHide={handleCloseModal}
             size="md"
             centered
         >
@@ -27,16 +46,24 @@ const CreateCategory = ({show, onHide}) => {
             <Modal.Body>
                 <Form>
                     <Form.Control
-                        placeholder={"Введите название типа"}
+                        placeholder="Введите название типа"
                         value={valueCategory}
-                        onChange={e => setValueCategory(e.target.value)}
+                        onChange={(e) => setValueCategory(e.target.value)}
                     />
                 </Form>
+                {error && (
+                    <div className="mt-3 mb-3">
+                        <Alert variant="danger">{error}</Alert>
+                    </div>
+                )}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant={"light"} onClick={onHide}>Закрыть</Button>
-                <Button variant={"outline-success"} onClick={addCategory}>Добавить</Button>
+                <Button variant="outline-danger" onClick={handleCloseModal}>
+                    Закрыть
+                </Button>
+                <Button variant="outline-success" className="ml-auto mr-3" onClick={addCategory}>Добавить</Button>
             </Modal.Footer>
+
         </Modal>
     );
 };
