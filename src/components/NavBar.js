@@ -1,16 +1,21 @@
 import React, { useContext } from 'react';
-import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Context } from "../index";
 import { NavLink } from "react-router-dom";
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from "../utils/consts";
+import { ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/navbar.css';
 import { logout } from '../http/userAPI';
-import CurtainMenu from '../pages/CurtainMenu';
+import CurtainMenu from './CurtainMenu';
+
+import { Navbar, Nav, Container, Row, Col } from 'react-bootstrap';
+import HoverDropdown from './HoverDropdown';
+
 
 const NavBar = observer(() => {
     const { userStore } = useContext(Context);
+    const { productStore } = useContext(Context);
+
     const navigate = useNavigate();
 
     const logout_user = () => {
@@ -27,48 +32,41 @@ const NavBar = observer(() => {
         return payload.role === 'Admin'; // предполагается, что у вас есть поле 'role'
     };
 
+    //if (isAdmin()) return null; // Если админ, не рендерим NavBar
+
     return (
-        <Navbar bg="dark" variant="dark" className="navbar-store">
-            <Container>
-                <NavLink className="logo-title" to={SHOP_ROUTE}>
-                    Магазин
-                </NavLink>
-                <Nav className="ml-auto d-flex align-items-center">
-                    {userStore.isAuth ? (
-                        <>
-                            {isAdmin() && (
+        <Navbar bg="dark" variant="dark" className="navbar-store d-flex justify-content-between">
+            <Container fluid>
+                <div className="d-flex">
+                    <Nav.Link className="logo-title" to={MAIN_ROUTE}>
+                        Магазин
+                    </Nav.Link>
+                    <Nav className="ms-2">
+                        <Nav.Link onClick={() => productStore.setSelectedGender('women')}>Women</Nav.Link>
+                        <Nav.Link onClick={() => productStore.setSelectedGender('men')}>Men</Nav.Link>
+                        <Nav.Link onClick={() => productStore.setSelectedGender('kids')}>Kids</Nav.Link>
+                    </Nav>
+                </div>
+                <div className="d-flex ml-auto">
+                    <Nav>
+                        {userStore.isAuth ? (
+                            <>
                                 <Nav.Item>
-                                    <Nav.Link
-                                        className="navbar-button"
-                                        onClick={() => navigate(ADMIN_ROUTE)}
-                                    >
-                                        Админ панель
-                                    </Nav.Link>
+                                    <HoverDropdown logout_user={logout_user} />
                                 </Nav.Item>
-                            )}
+                            </>
+                        ) : (
                             <Nav.Item>
                                 <Nav.Link
-                                    className="btn-login"
-                                    onClick={logout_user}
+                                    className="navbar-button"
+                                    onClick={() => navigate(LOGIN_ROUTE)}
                                 >
-                                    Выйти
+                                    Авторизация
                                 </Nav.Link>
                             </Nav.Item>
-                            <Nav.Item>
-                                <CurtainMenu />
-                            </Nav.Item>
-                        </>
-                    ) : (
-                        <Nav.Item>
-                            <Nav.Link
-                                className="navbar-button"
-                                onClick={() => navigate(LOGIN_ROUTE)}
-                            >
-                                Авторизация
-                            </Nav.Link>
-                        </Nav.Item>
-                    )}
-                </Nav>
+                        )}
+                    </Nav>
+                </div>
             </Container>
         </Navbar>
     );

@@ -25,6 +25,13 @@ export default class UserStore {
         }
     };
 
+    isAdmin() {
+        const token = localStorage.getItem('authToken');
+        if (!token) return false;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.role === 'Admin';
+    }
+
     get isAuth() {
         return this._isAuth;
     }

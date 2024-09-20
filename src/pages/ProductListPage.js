@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
-import CategoryBar from "../components/CategoryBar";
+//import CategoryBar from "../components/CategoryBar";
 import ProductList from "../components/ProductList";
 import '../assets/css/shop.css';
 import {observer} from "mobx-react-lite";
@@ -9,7 +9,7 @@ import {fetchCategories, fetchProductsByCategory, fetchTotalCountOfProductsWithF
 
 import PagesPagination from "../components/PagesPagination"
 
-const Shop = observer (() => {
+const ProductListPage = observer (() => {
     const  {productStore} = useContext(Context);
 
     // initial Fetch categories 
@@ -46,7 +46,7 @@ const Shop = observer (() => {
         <Container>
             <Row className="shop-content">
                 <Col md={3}>
-                    <CategoryBar />
+                    {/* <CategoryBar /> */}
                 </Col>
                 <Col md={9}>
                     <ProductList/>
@@ -58,4 +58,4 @@ const Shop = observer (() => {
     );
 });
 
-export default Shop;
+export default ProductListPage;
