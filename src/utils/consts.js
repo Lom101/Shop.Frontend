@@ -10,3 +10,5 @@ export const ORDERS_ROUTE = '/orders'; // Маршрут для заказов
 export const SETTINGS_ROUTE = '/settings'; // Маршрут для настроек
 
 export const PRODUCT_LIST_ROUTE = '/all';
+
+export const CART_ROUTE = '/cart';

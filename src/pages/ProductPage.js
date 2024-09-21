@@ -1,18 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Image} from "react-bootstrap";
 import '../assets/css/productpage.css'
 import star from '../assets/svg/rating-star.svg';
 import {useParams} from 'react-router-dom';
 import {fetchOneProduct} from "../http/productAPI";
+import { Context } from '../index';
 
 const ProductPage = () => {
     const [product, setProduct] = useState({info: []});
     const {id} = useParams();
+    const { cartStore } = useContext(Context); // Получите cartStore из контекста
+
 
     useEffect(() => {
-        fetchOneProduct(id).then(data => setProduct(data));
+        fetchOneProduct(id).then(data => setProduct(data)); 
         // eslint-disable-next-line
     }, []);
+
+    const addToCart = () => {
+        cartStore.addToCart(product); // Добавьте продукт в корзину
+    };
+
 
     return (
         <Container className="product-page">
@@ -34,9 +42,9 @@ const ProductPage = () => {
                        <h2 className="price-title">
                            Цена от: {product.price} руб
                        </h2>
-                       <Button className="product-btn-basket">
-                           Добавить в корзину
-                       </Button>
+                       <Button className="product-btn-basket" onClick={addToCart}>
+                            Добавить в корзину
+                        </Button>
                    </Card>
                </Col>
            </div>

@@ -12,6 +12,10 @@ export default class ProductStore {
         makeAutoObservable(this);
     }
 
+    setSelectedGender(gender){
+        console.log("имитируем что выбран гендер", gender)
+    }
+
     setCategories(categories) {
         this._categories = categories;
     }

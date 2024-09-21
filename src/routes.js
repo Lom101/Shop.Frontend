@@ -1,5 +1,5 @@
 import AdminPage from "./pages/AdminPage";
-import Basket from "./pages/Basket";
+import Basket from "./pages/CartPage";
 import ProductListPage from "./pages/ProductListPage";
 import ProductPage from "./pages/ProductPage";
 import Auth from "./pages/Auth";
@@ -7,15 +7,17 @@ import OrdersPage from "./pages/OrdersPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import MainPage from "./pages/MainPage";
+import CartPage from "./pages/CartPage";
 
-import {ADMIN_ROUTE, BASKET_ROUTE, PRODUCT_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE,
-    ORDERS_ROUTE, SETTINGS_ROUTE, PROFILE_ROUTE, MAIN_ROUTE, PRODUCT_LIST_ROUTE
+import {ADMIN_ROUTE, PRODUCT_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE,
+    ORDERS_ROUTE, SETTINGS_ROUTE, PROFILE_ROUTE, MAIN_ROUTE, PRODUCT_LIST_ROUTE,
+    CART_ROUTE
 } from "./utils/consts";
 
 export const authRoutes = [
     {
-        path: BASKET_ROUTE,
-        Component: Basket
+        path: CART_ROUTE,
+        Component: CartPage
     },
     {
         path: ORDERS_ROUTE,
