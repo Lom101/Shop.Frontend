@@ -12,3 +12,6 @@ export const SETTINGS_ROUTE = '/settings'; // Маршрут для настро
 export const PRODUCT_LIST_ROUTE = '/all';
 
 export const CART_ROUTE = '/cart';
+
+
+export const CHECKOUT_ROUTE = '/checkout';

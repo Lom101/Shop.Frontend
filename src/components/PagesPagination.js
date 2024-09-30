@@ -6,18 +6,18 @@ import { Pagination } from "react-bootstrap";
 const PagesPagination = observer(() => {
     const { productStore } = useContext(Context);
 
-    const pageCount = Math.ceil(productStore.totalCount / productStore.limit);
+    const pageCount = Math.ceil(productStore.totalCount / productStore.pageSize);
     let pages = [];
 
     // Генерируем массив страниц с учетом одного элемента вперед и назад от текущей
     for (let i = 1; i <= pageCount; i++) {
-        if (i === productStore.page || (Math.abs(i - productStore.page) === 1)) {
+        if (i === productStore.pageNumber || (Math.abs(i - productStore.pageNumber) === 1)) {
             pages.push(i);
         }
     }
 
-    const handlePageChange = (page) => {
-        productStore.setPage(page);
+    const handlePageChange = (pageNumber) => {
+        productStore.setPage(pageNumber);
     };
 
     return (
@@ -25,19 +25,19 @@ const PagesPagination = observer(() => {
             {pages.length > 0 ? (
                 <>
                     <Pagination.First onClick={() => handlePageChange(1)} />
-                    <Pagination.Prev onClick={() => handlePageChange(productStore.page > 1 ? productStore.page - 1 : 1)} />
+                    <Pagination.Prev onClick={() => handlePageChange(productStore.pageNumber > 1 ? productStore.pageNumber - 1 : 1)} />
 
-                    {pages.map((page) =>
+                    {pages.map((pageNumber) =>
                         <Pagination.Item
-                            key={page}
-                            active={productStore.page === page}
-                            onClick={() => handlePageChange(page)}
+                            key={pageNumber}
+                            active={productStore.pageNumber === pageNumber}
+                            onClick={() => handlePageChange(pageNumber)}
                         >
-                            {page}
+                            {pageNumber}
                         </Pagination.Item>
                     )}
 
-                    <Pagination.Next onClick={() => handlePageChange(productStore.page < pageCount ? productStore.page + 1 : pageCount)} />
+                    <Pagination.Next onClick={() => handlePageChange(productStore.pageNumber < pageCount ? productStore.pageNumber + 1 : pageCount)} />
                     <Pagination.Last onClick={() => handlePageChange(pageCount)} />
                 </>
             ) : (

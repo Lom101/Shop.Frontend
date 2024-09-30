@@ -21,7 +21,7 @@ const MainCarousel = () => {
   ];
 
   return (
-    <Container fluid className="p-0 mt-4"> {/* Отступ сверху для Navbar */}
+    <Container fluid className="p-0"> {/* Отступ сверху для Navbar */}
       <Carousel>
         {slides.map((slide, index) => (
           <Carousel.Item key={index}>

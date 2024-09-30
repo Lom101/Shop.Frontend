@@ -35,10 +35,10 @@ const Auth = observer (() => {
     };
 
     return (
-        <Container className="d-flex justify-content-center align-items-center height-auth">
+        <Container className="d-flex justify-content-center align-items-center " style={{ height: '85vh' }}>
                     <Card className="p-5 card-auth">
                         <h2 className="m-auto">{isLogin ? 'Авторизация' : 'Регистрация'}</h2>
-                        <Form className="">
+                        <Form className="" style={{  width: '60vh' }}>
                             <Form.Control
                                 className="mt-3"
                                 placeholder="Введите ваш email..."

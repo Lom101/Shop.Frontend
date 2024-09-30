@@ -7,7 +7,7 @@ const ProductList = observer (() => {
     const {productStore} = useContext(Context);
 
     return (
-        <div className="d-flex flex-wrap mt-3">
+        <div className="d-flex flex-wrap">
             {productStore.products.map(product =>
                 <ProductItem
                     key={product.id}

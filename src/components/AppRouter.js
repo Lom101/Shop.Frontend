@@ -8,7 +8,7 @@ import {observer} from "mobx-react-lite";
 const AppRouter = observer (() => { 
     const {userStore} = useContext(Context);
     return (
-        <Routes>
+        <Routes className="flex-grow-1">
             {userStore.isAuth && userStore.isAdmin() && adminRoutes.map(({ path, Component }) => // Проверка на админа
                 <Route key={path} path={path} element={<Component />} exact />
             )}

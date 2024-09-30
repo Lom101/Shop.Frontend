@@ -10,9 +10,7 @@ const App = observer(() => {
         <BrowserRouter>
             <NavBar/>
             <AppRouter/>
-            <div className="d-flex flex-column min-vh-5">
-                <Footer />
-            </div>
+            <Footer />
         </BrowserRouter>
     );
 });

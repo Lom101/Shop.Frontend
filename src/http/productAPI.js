@@ -5,30 +5,8 @@ export const createCategory = async (category) => {
     return data;
 }
 
-export const fetchCategories= async () => {
-    const {data} = await $host.get('api/category');
-    return data;
-}
-
 export const createProduct = async (product) => {
     const {data} = await $authHost.post('api/product', product);
-    return data;
-}
-
-export const fetchProductsByCategory = async (categoryId, page, limit = 4) => {
-    // console.log('Fetching products by category:', categoryId);
-    const {data} = await $host.get('api/product/filterByCategory', {
-        params: {categoryId, page, limit}
-    });
-    // console.log('Data received:', data); // Добавьте это для отладки
-    return data;
-};
-
-// if category === null -> return count of all products without filtration
-export const fetchTotalCountOfProductsWithFiltration = async (categoryId) => {
-    const {data} = await $host.get('api/product/totalCountInCategory', {
-        params: {categoryId}
-    });
     return data;
 }
 
@@ -36,3 +14,66 @@ export const fetchOneProduct = async (id) => {
     const {data} = await $host.get('api/product/' + id);
     return data;
 }
+
+export const fetchCategories= async () => {
+    const {data} = await $host.get('api/category');
+    return data;
+}
+
+// export const fetchBrands = async () => {
+//     const {data} = await $host.get('api/brand/');
+//     return data;
+// }
+//
+// export const fetchSizes = async () => {
+//     const {data} = await $host.get('api/size/');
+//     return data;
+// }
+//
+// export const fetchColors = async () => {
+//     const {data} = await $host.get('api/color/');
+//     return data;
+// }
+
+export const fetchProductFilterOptions = async () => {
+    const {data} = await $host.get('api/product/filter_options');
+    return data;
+}
+
+export const fetchFilteredPagedProducts = async (
+    pageNumber = 1,
+    pageSize = 12,
+    categoryId,
+    brandId,
+    sizeIds, // Массив идентификаторов размеров
+    colorIds, // Массив идентификаторов цветов
+    minPrice,
+    maxPrice,
+    inStock
+) => {
+    // Преобразуем массив sizeIds в строку формата sizeIds=1&sizeIds=2
+    const sizeIdParams = sizeIds?.map(id => `sizeIds=${id}`).join('&') || '';
+
+    // Формируем объект параметров фильтрации
+    const filterParams = {
+        pageNumber,
+        pageSize,
+        ...(typeof categoryId === 'number' && { categoryId }),
+        ...(typeof brandId === 'number' && { brandId }),
+        ...(minPrice !== undefined && minPrice !== null && !isNaN(minPrice) && { minPrice: String(minPrice) }),
+        ...(maxPrice !== undefined && maxPrice !== null && !isNaN(maxPrice) && { maxPrice: String(maxPrice) }),
+        ...(typeof inStock === 'boolean' && { inStock }),
+        ...(colorIds && colorIds.length !== 0 && { colorIds }), // Аналогично для colorIds
+    };
+
+    // Добавляем sizeIdParams в параметры, если он не пустой
+    const queryString = Object.entries(filterParams)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+
+    const url = `api/product/filtered_paged?${queryString}${sizeIdParams ? '&' + sizeIdParams : ''}`;
+
+    const { data } = await $host.get(url);
+
+    return data;
+};

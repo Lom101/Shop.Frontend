@@ -1,0 +1,14 @@
+.filterPanel-item {
+    transition: background-color 0.3s, border-color 0.3s; /* Плавный переход */
+}
+
+.filterPanel-item.active {
+    background-color: #d0d0d0; /* Серый цвет фона */
+    color: #000; /* Цвет текста */
+    border: 2px solid #888; /* Цвет контура для активного состояния */
+}
+
+.filterPanel-item:hover {
+    background-color: #e0e0e0; /* Цвет фона при наведении */
+    border: 2px solid #888; /* Цвет контура при наведении */
+}

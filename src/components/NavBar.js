@@ -1,14 +1,12 @@
 import React, { useContext } from 'react';
 import { Context } from "../index";
 import { NavLink } from "react-router-dom";
-import { LOGIN_ROUTE, MAIN_ROUTE, PROFILE_ROUTE, ORDERS_ROUTE, SETTINGS_ROUTE, CART_ROUTE } from "../utils/consts";
+import { CART_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, PRODUCT_LIST_ROUTE } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from 'react-router-dom';
-import '../assets/css/navbar.css';
 import { logout } from '../http/userAPI';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import HoverDropdown from './HoverDropdown';
-import Cart from './Cart';
 
 const NavBar = observer(() => {
     const { userStore } = useContext(Context);
@@ -21,42 +19,47 @@ const NavBar = observer(() => {
         logout();
     };
 
+    function findCategoryByName(name) {
+        return productStore.categories.find(category => category.name === name);
+    }
+      
+
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="navbar-store d-flex justify-content-between">
+        // d-flex justify-content-between
+        <Navbar bg="dark" variant="dark" expand="lg" className="navbar-store navbar-expand-lg sticky-top">
             <Container fluid>
-                
-            <Nav className="me-auto">
-                    {/* <Nav.Link as={NavLink} to={MAIN_ROUTE} className="logo-title">
-                        <img
-                            src="icon.webp"  // Путь к логотипу
-                            alt="Логотип"
-                            width="25"
-                            height="25"
-                            className="d-inline-block align-top"
-                        />
-                    </Nav.Link> */}
-                    
+                <Nav className="me-autor">
                     <Nav.Link as={NavLink} to={MAIN_ROUTE}>
                         Магазин 
                     </Nav.Link>
                     
-                    <Nav.Link onClick={() => productStore.setSelectedGender('women')}>
+                    <Nav.Link onClick={() => {
+                        productStore.setSelectedCategory(findCategoryByName("Women's"));
+                        navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                    }}>
                         Women
                     </Nav.Link>
-                    <Nav.Link onClick={() => productStore.setSelectedGender('men')}>
+                    <Nav.Link onClick={() => {
+                        productStore.setSelectedCategory(findCategoryByName("Men's"));
+                        navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                    }}>
                         Men
                     </Nav.Link>
-                    <Nav.Link onClick={() => productStore.setSelectedGender('kids')}>
+                    <Nav.Link onClick={() => {
+                        productStore.setSelectedCategory(findCategoryByName("Children's"));
+                        navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                    }}>
                         Kids
                     </Nav.Link>
                 </Nav>
-
 
                 {/* Личный кабинет или авторизация */}
                 <Nav className="ms-auto">
                     {userStore.isAuth && !userStore.isAdmin() && ( // Условие для отображения корзины
                         <Nav.Item>
-                            <Cart />
+                            <Nav.Link as={NavLink} to={CART_ROUTE} className="navbar-button">
+                                Корзина
+                            </Nav.Link>
                         </Nav.Item>
                     )}
                     {userStore.isAuth ? (
