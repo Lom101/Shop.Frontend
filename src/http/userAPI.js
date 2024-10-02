@@ -74,3 +74,29 @@ export const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
 };
+
+export const addAddress = async (addressData) => {
+    const response = await $authHost.post('/api/address', addressData);
+    return response;
+};
+
+// Метод для получения всех адресов пользователя
+export const fetchAddresses = async (userId) => {
+    const response = await $authHost.get(`api/Address/get_by_user_id`, {
+        params: { userId }
+    });
+    return response.data;
+};
+
+export const createOrder = async (order) => {
+    const {data} = await $authHost.post('api/order', order);
+    return data;
+}
+
+// Метод для получения всех заказов пользователя
+export const fetchOrders = async (userId) => {
+    const response = await $authHost.get(`api/Order/get_by_user_id`, {
+        params: { userId }
+    });
+    return response.data;
+};

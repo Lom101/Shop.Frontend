@@ -7,6 +7,8 @@ import {login, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from 'react-router-dom';
 import {Context} from "../index";
+import {jwtDecode} from 'jwt-decode';
+
 
 const Auth = observer (() => {
     const {userStore} = useContext(Context);
@@ -24,6 +26,21 @@ const Auth = observer (() => {
             } else {
                await registration(email, password);
             }
+
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Декодируйте токен
+                const decoded = jwtDecode(token);
+
+                // Предполагаем, что ваши данные пользователя находятся в decoded.user
+                const userData = {
+                    id: decoded.id,
+                    email: decoded.email,
+                    // name: decoded.name
+                };
+                userStore.setUser(userData); // Установите данные пользователя в userStore
+            }
+
             userStore.setUser(true); // userStore
             userStore.setIsAuth(true);   
             navigate(MAIN_ROUTE);

@@ -1,113 +1,172 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Button, Form, Alert } from 'react-bootstrap';
+import { createPaymentIntent } from '../http/stripeAPI';
 import { Context } from "../index";
-import { observer } from "mobx-react-lite";
-import { Card, Button, Form, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { addAddress, createOrder } from "../http/userAPI";
 
-const CheckoutPage = observer(() => {
+const CheckoutPage = () => {
+    const stripe = useStripe();
+    const elements = useElements();
     const { cartStore } = useContext(Context);
-    const navigate = useNavigate();
+    const { userStore } = useContext(Context);
 
-    useEffect(() => {
-        const canAccessCheckout = localStorage.getItem('canAccessCheckout');
-        if (!canAccessCheckout) {
-            navigate('/cart'); // Redirect to cart page if the flag is not set
-        }
+    const [clientSecret, setClientSecret] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [selectedAddressId, setSelectedAddressId] = useState(''); // Выбранный адрес
+    const [contactPhone, setContactPhone] = useState(''); // Контактный телефон
 
-        return () => {
-            localStorage.removeItem('canAccessCheckout'); // Clear the flag after leaving the page
-        };
-    }, [navigate]);
+    const totalAmount = cartStore.cartItems.reduce((total, item) => total + item.model.price * item.quantity, 0);
+    const addressExists = userStore.addresses && userStore.addresses.length !== 0;
 
-    const [customerInfo, setCustomerInfo] = useState({
-        name: '',
-        email: '',
-        address: ''
-    });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setCustomerInfo({ ...customerInfo, [name]: value });
+    const handleAddressChange = (e) => {
+        setSelectedAddressId(e.target.value);
     };
 
-    const handleCheckout = () => {
-        if (customerInfo.name && customerInfo.email && customerInfo.address) {
-            alert("Заказ успешно оформлен!");
-            cartStore.clearCart();
-            navigate('/'); // Redirect to homepage or any other page
-        } else {
-            alert("Пожалуйста, заполните все поля.");
+    const [showAddressForm, setShowAddressForm] = useState(false);
+    const [addressData, setAddressData] = useState({ street: '', city: '', state: '', zipCode: '' });
+
+    const handleAddressSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const addressWithUserId = { ...addressData, userId: userStore.user.id };
+            if (userStore.user.id) {
+                await addAddress(addressWithUserId);
+                await userStore.fetchAddresses(); // Обновите адреса
+                setShowAddressForm(false);
+            } else {
+                setError('Попробуйте еще раз.');
+            }
+        } catch (error) {
+            console.error('Ошибка при добавлении адреса:', error);
+            setError('Не удалось добавить адрес.');
         }
+    };
+
+    useEffect(() => {
+        const initiatePayment = async () => {
+            try {
+                const clientSecret = await createPaymentIntent(totalAmount);
+                setClientSecret(clientSecret);
+            } catch (error) {
+                console.error('Ошибка при создании PaymentIntent', error);
+                setError('Ошибка при создании намерения платежа.');
+            }
+        };
+
+        initiatePayment();
+    }, [totalAmount]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        if (!stripe || !elements) {
+            setError('Stripe не загружен.');
+            setIsLoading(false);
+            return;
+        }
+
+        const cardElement = elements.getElement(CardElement);
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+            },
+        });
+
+        if (!error) {
+            const orderData = {
+                userId: userStore.user.id,
+                status: 1,
+                paymentIntentId: paymentIntent.id,
+                addressId: Number(selectedAddressId), // Используйте выбранный адрес
+                contactPhone,
+                orderItems: cartStore.cartItems.map(item => ({
+                    modelId: Number(item.modelId), // Преобразуем modelId в число
+                    sizeId: Number(item.sizeId), // Преобразуем sizeId в число
+                    quantity: item.quantity, // quantity остается числом
+                })),
+            };
+            try {
+                await createOrder(orderData);
+                setPaymentSuccess(true);
+            } catch (error) {
+                console.error("Ошибка создания заказа:", error);
+                setError('Ошибка создания заказа.');
+            }
+        } else {
+            console.error("Ошибка оплаты:", error);
+        }
+
+        setIsLoading(false);
     };
 
     return (
-        <div className="container mb-3 pt-3">
-            <h1 className="mb-4">Оформление заказа</h1>
-            <Row>
-                <Col md={8}>
-                    <Card className="mb-4">
-                        <Card.Body>
-                            <h4>Информация о покупателе</h4>
-                            <Form>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Имя</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="name"
-                                        value={customerInfo.name}
-                                        onChange={handleInputChange}
-                                        placeholder="Введите ваше имя"
-                                    />
-                                </Form.Group>
+        <div className="container mt-4 mb-4">
+            <h2>Оформление заказа</h2>
 
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        name="email"
-                                        value={customerInfo.email}
-                                        onChange={handleInputChange}
-                                        placeholder="Введите ваш email"
-                                    />
-                                </Form.Group>
-
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Адрес доставки</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="address"
-                                        value={customerInfo.address}
-                                        onChange={handleInputChange}
-                                        placeholder="Введите ваш адрес"
-                                    />
-                                </Form.Group>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                </Col>
-
-                <Col md={4}>
-                    <Card className="mb-4">
-                        <Card.Body>
-                            <h4>Ваш заказ</h4>
-                            <ul className="list-group mb-3">
-                                {cartStore.cartItems.map((item, index) => (
-                                    <li key={index} className="list-group-item d-flex justify-content-between">
-                                        <span>{item.name} (Размер: {item.size?.name})</span>
-                                        <span>{item.model.price} руб</span>
-                                    </li>
-                                ))}
-                            </ul>
-                            <h5>Итого: {cartStore.cartItems.reduce((total, item) => total + item.model.price * item.quantity, 0)} руб</h5>
-                        </Card.Body>
-                    </Card>
-                    <Button variant="success" className="w-100" onClick={handleCheckout}>
-                        Оформить заказ
-                    </Button>
-                </Col>
-            </Row>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {paymentSuccess ? (
+                <Alert variant="success">Оплата прошла успешно!</Alert>
+            ) : (
+                <>
+                    {!addressExists ? (
+                        <>
+                            <h4>Пожалуйста, добавьте адрес доставки</h4>
+                            {showAddressForm ? (
+                                <Form onSubmit={handleAddressSubmit}>
+                                    <Form.Group>
+                                        <Form.Label>Улица</Form.Label>
+                                        <Form.Control type="text" onChange={e => setAddressData({ ...addressData, street: e.target.value })} />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Город</Form.Label>
+                                        <Form.Control type="text" onChange={e => setAddressData({ ...addressData, city: e.target.value })} />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Штат</Form.Label>
+                                        <Form.Control type="text" onChange={e => setAddressData({ ...addressData, state: e.target.value })} />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>Почтовый индекс</Form.Label>
+                                        <Form.Control type="text" onChange={e => setAddressData({ ...addressData, zipCode: e.target.value })} />
+                                    </Form.Group>
+                                    <Button type="submit">Добавить адрес</Button>
+                                    <Button variant="secondary" onClick={() => setShowAddressForm(false)}>Отмена</Button>
+                                </Form>
+                            ) : (
+                                <Button onClick={() => setShowAddressForm(true)}>Добавить новый адрес</Button>
+                            )}
+                        </>
+                    ) : (
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group>
+                                <Form.Label>Выберите адрес доставки</Form.Label>
+                                <Form.Control as="select" value={selectedAddressId} onChange={handleAddressChange}>
+                                    <option value="">Выберите адрес...</option>
+                                    {userStore.addresses.map(address => (
+                                        <option key={address.id} value={address.id}>
+                                            {`${address.street}, ${address.city}, ${address.state}, ${address.zipCode}`}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                            <div className="mb-3">
+                                <h4>Сумма к оплате: {totalAmount} руб</h4>
+                            </div>
+                            <CardElement className="mb-3" />
+                            <Button variant="success" type="submit" disabled={!stripe || isLoading}>
+                                {isLoading ? 'Обработка...' : 'Оплатить'}
+                            </Button>
+                        </Form>
+                    )}
+                </>
+            )}
         </div>
     );
-});
+};
 
 export default CheckoutPage;
