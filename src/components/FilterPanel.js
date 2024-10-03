@@ -20,15 +20,17 @@ const FilterPanel = observer(() => {
         productStore.setSelectedBrand('');
         productStore.setSelectedColor('');
         productStore.setSelectedSizes([]);
-        setMinPrice(productStore._minPrice);
+        setMinPrice(productStore._minPrice); // записываем значения на ui
         setMaxPrice(productStore._maxPrice);
+        productStore.setSelectedMinPrice(productStore._minPrice); // и также записываем в store
+        productStore.setSelectedMaxPrice(productStore._maxPrice);
         productStore.setSelectedInStock(true);
     };
 
     return (
         <div className="border p-3 mb-4 bg-light rounded">
-            <h5 className="fw-bold">Категории</h5>
-            <ListGroup className="mb-3">
+            <h5 className="fw-bold ps-1 mb-1">Категории</h5>
+            <ListGroup className="mb-2">
                 <ListGroup.Item
                     className={`filterPanel-item ${'' === productStore.selectedCategory ? 'active' : ''}`}
                     onClick={() => productStore.setSelectedCategory('')}
@@ -53,8 +55,8 @@ const FilterPanel = observer(() => {
                 )}
             </ListGroup>
 
-            <h5 className="fw-bold">Бренды</h5>
-            <ListGroup className="mb-3">
+            <h5 className="fw-bold ps-1 mb-1">Бренды</h5>
+            <ListGroup className="mb-2">
                 <ListGroup.Item
                     className={`filterPanel-item ${'' === productStore.selectedBrand ? 'active' : ''}`}
                     onClick={() => productStore.setSelectedBrand('')}
@@ -76,10 +78,10 @@ const FilterPanel = observer(() => {
                 )}
             </ListGroup>
 
-            <h5 className="fw-bold">Цвет</h5>
+            <h5 className="fw-bold ps-1 mb-1">Цвет</h5>
             <Form.Control
                 as="select"
-                className="mb-3"
+                className="mb-2"
                 value={productStore.selectedColor?.id || ''}
                 onChange={(e) => {
                     if (e.target.value === "") {
@@ -101,13 +103,14 @@ const FilterPanel = observer(() => {
                 )}
             </Form.Control>
 
-            <h5 className="fw-bold">Размер</h5>
+            <h5 className="fw-bold ps-1 mb-1">Размер</h5>
             <div style={{
                 maxHeight: '150px',
                 overflowY: 'auto',
                 border: '1px solid #ced4da',
                 borderRadius: '0.25rem',
-                padding: '0.5rem'
+                padding: '0.5rem',
+                marginBottom: '0.5rem'
             }}>
                 {Array.isArray(productStore.sizes) && productStore.sizes.length > 0 ? (
                     productStore.sizes.map((size) => (
@@ -134,8 +137,8 @@ const FilterPanel = observer(() => {
                 )}
             </div>
 
-            <h5 className="fw-bold">Цена</h5>
-            <Row className="mb-3">
+            <h5 className="fw-bold ps-1 mb-1">Цена</h5>
+            <Row className="mb-2">
                 <Col>
                     <Form.Control
                         type="number"
@@ -153,11 +156,12 @@ const FilterPanel = observer(() => {
                     />
                 </Col>
             </Row>
+
             <Button variant="primary" className="w-100 mb-2" onClick={handlePriceChange}>Применить</Button>
 
-            <Button variant="secondary" className="w-100 mb-3" onClick={clearFilters}>Очистить фильтры</Button>
+            <Button variant="secondary" className="w-100 mb-2" onClick={clearFilters}>Очистить фильтры</Button>
 
-            <h5 className="fw-bold mt-3">В наличии</h5>
+            <h5 className="fw-bold ps-1 mb-1">В наличии</h5>
             <Form.Check
                 type="checkbox"
                 label="Показать только товары в наличии"

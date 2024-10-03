@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { PRODUCT_ROUTE } from "../utils/consts";
 import { Context } from "../index";
 import { FaStar } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 
 const ProductItem = ({ product }) => {
     const navigate = useNavigate();
@@ -40,7 +41,7 @@ const ProductItem = ({ product }) => {
     const handleConfirmAddToCart = () => {
         if (selectedModel && selectedSize) {
             cartStore.addToCart(product, selectedModel.id, selectedSize.id);
-            alert(`${product.name} добавлен в корзину!`);
+            // alert(`${product.name} добавлен в корзину!`);
             handleCloseModal();
         } else {
             alert("Пожалуйста, выберите модель и размер.");
@@ -66,11 +67,12 @@ const ProductItem = ({ product }) => {
 
     return (
         <Col md={3} className="mb-3">
-            <Card className='product-item shadow-sm' onClick={handleCardClick}>
+            <Card className='product-item shadow-sm border-0 transform transition-transform duration-200 hover:scale-105' onClick={handleCardClick}>
                 <Card.Img
                     variant="top"
                     src={`${process.env.REACT_APP_API_URL}/images/${product.models[0].photos[0].fileName}`}
                     alt={product.name}
+                    className="cursor-pointer"
                     style={{
                         height: '200px',
                         width: '100%',
@@ -78,46 +80,64 @@ const ProductItem = ({ product }) => {
                     }}
                 />
                 <Card.Body>
-                    <Card.Title>{product.name}</Card.Title>
-                    <Card.Text>{product.description}</Card.Text>
+                    <Card.Text className="cursor-pointer">{product.name}</Card.Text>
+                    <Card.Title className="cursor-pointer">{getPriceRange(product.models)}</Card.Title>
+
                     <div className="d-flex align-items-center">
-                        <span className="me-1">{product.averageRating}</span>
-                        {[...Array(5)].map((_, index) => (
-                            <FaStar
-                                key={index}
-                                color={index < product.averageRating ? '#FFD700' : '#D3D3D3'}
-                                size={20}
-                                className="me-1"
-                            />
-                        ))}
+                        {product.averageRating > 0 ? (
+                            <>
+                                <div className="cursor-pointer d-flex align-items-center">
+                                    <span>{product.averageRating.toFixed(1)}</span>
+                                    <FaStar className="text-warning ms-1"/>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="cursor-pointer d-flex align-items-center">
+                                    <FaStar className="text-gray-400 ms-1 me-1"/> {/* Серая звездочка */}
+                                    <span className="text-gray-400">Нет отзывов</span> {/* Текст при отсутствии отзывов */}
+                                </div>
+                            </>
+                        )}
                     </div>
-                    <div className="mt-2">
-                        <h6>Доступные размеры:</h6>
+
+                    <div className="flex justify-between items-center">
+                        {/* Список размеров */}
                         <div>
                             {availableSizes.map(size => (
-                                <Badge key={size.id} pill bg="dark" className="me-1 mb-1">
+                                <Badge  key={size.id} pill bg="dark" className="cursor-pointer me-1 mb-1">
                                     {size.name}
                                 </Badge>
                             ))}
                         </div>
+
+                        {/* Иконка корзины */}
+                        <div
+                            className="me-3 bg-gray-800 text-white p-2.5 rounded-full inline-flex items-center justify-center cursor-pointer hover:bg-gray-700 transform transition-transform duration-200 hover:scale-110"
+                            onClick={handleAddToCart} // Обработчик клика
+                        >
+                            <FaShoppingCart size={24}/>
+                        </div>
                     </div>
-                    <Button variant="dark" onClick={handleAddToCart}>
-                        Добавить в корзину
-                    </Button>
+
                 </Card.Body>
             </Card>
 
             {/* Модальное окно для выбора модели и размера */}
             <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Выберите модель и размер</Modal.Title>
+                <Modal.Header closeButton className="border-b border-gray-300">
+                    <Modal.Title className="text-xl font-semibold">Выберите модель и размер</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body className="bg-gray-50 p-4">
                     <Form>
                         {/* Выбор модели */}
                         <Form.Group className="mb-3">
                             <Form.Label>Модель</Form.Label>
-                            <Form.Select onChange={handleModelChange} defaultValue="">
+                            <Form.Select
+                                onChange={handleModelChange}
+                                defaultValue=""
+                                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2"
+                            >
                                 <option value="" disabled>Выберите модель</option>
                                 {product.models.map(model => (
                                     <option key={model.id} value={model.id}>
@@ -131,7 +151,11 @@ const ProductItem = ({ product }) => {
                         {selectedModel && (
                             <Form.Group className="mb-3">
                                 <Form.Label>Размер</Form.Label>
-                                <Form.Select onChange={handleSizeChange} defaultValue="">
+                                <Form.Select
+                                    onChange={handleSizeChange}
+                                    defaultValue=""
+                                    className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2"
+                                >
                                     <option value="" disabled>Выберите размер</option>
                                     {selectedModel.sizes.map(size => (
                                         <option key={size.id} value={size.id} disabled={!size.isAvailable}>
@@ -143,11 +167,11 @@ const ProductItem = ({ product }) => {
                         )}
                     </Form>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
+                <Modal.Footer className="border-t border-gray-300">
+                    <Button variant="danger" onClick={handleCloseModal}>
                         Отмена
                     </Button>
-                    <Button variant="primary" onClick={handleConfirmAddToCart}>
+                    <Button variant="success" onClick={handleConfirmAddToCart}>
                         Добавить в корзину
                     </Button>
                 </Modal.Footer>
@@ -155,5 +179,23 @@ const ProductItem = ({ product }) => {
         </Col>
     );
 };
+
+const getPriceRange = (models) => {
+    if (models.length === 0) {
+        return "Нет доступных цен";
+    }
+
+    const prices = models.map(model => model.price); // Получаем массив цен
+    const minPrice = Math.min(...prices); // Находим минимальную цену
+    const maxPrice = Math.max(...prices); // Находим максимальную цену
+
+    // Если минимальная и максимальная цена совпадают, отображаем только одну цену
+    if (minPrice === maxPrice) {
+        return `${minPrice} руб.`;
+    }
+
+    return `${minPrice} - ${maxPrice} руб.`; // Форматируем строку диапазона
+};
+
 
 export default ProductItem;

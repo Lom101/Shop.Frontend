@@ -3,6 +3,7 @@ import { Nav, NavDropdown } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { ORDERS_ROUTE, PROFILE_ROUTE, SETTINGS_ROUTE } from '../utils/consts';
 import { FaUser } from 'react-icons/fa';
+import "../assets/css/hoverdropdown.css"
 
 const HoverDropdown = ({ logout_user }) => {
     const [show, setShow] = useState(false);
@@ -22,8 +23,8 @@ const HoverDropdown = ({ logout_user }) => {
             <NavDropdown
                 id="nav-dropdown-dark-example"
                 title={
-                    <span>
-                        <FaUser style={{ marginRight: '6px', marginBottom: '4px' }} />
+                    <span className="flex items-center">
+                        <FaUser className="mr-2 mb-0" />
                         Личный кабинет
                     </span>
                 }
@@ -31,6 +32,7 @@ const HoverDropdown = ({ logout_user }) => {
                 show={show} // Управление видимостью вручную
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                className="dropdown-toggle"
             >
                 {/* Ссылки на внутренние маршруты */}
                 <NavDropdown.Item as={NavLink} to={PROFILE_ROUTE}>Профиль</NavDropdown.Item>

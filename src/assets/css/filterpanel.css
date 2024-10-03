@@ -3,12 +3,12 @@
 }
 
 .filterPanel-item.active {
-    background-color: #d0d0d0; /* Серый цвет фона */
+    background-color: #e7e7e7; /* Серый цвет фона */
     color: #000; /* Цвет текста */
-    border: 2px solid #888; /* Цвет контура для активного состояния */
+    border: 2px solid #b3b3b3; /* Цвет контура для активного состояния */
 }
 
 .filterPanel-item:hover {
-    background-color: #e0e0e0; /* Цвет фона при наведении */
-    border: 2px solid #888; /* Цвет контура при наведении */
+    background-color: #e7e7e7; /* Цвет фона при наведении */
+    border: 2px solid #b3b3b3; /* Цвет контура при наведении */
 }

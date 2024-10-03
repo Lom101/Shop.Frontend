@@ -1,0 +1,4 @@
+/* styles.css */
+.dropdown-toggle::after {
+    display: none !important; /* Убирает стрелку */
+}

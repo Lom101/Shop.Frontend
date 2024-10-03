@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
     return (
-        <footer className="footer-container bg-dark text-white py-5">
+        <footer className="footer-container bg-dark text-white py-5 mt-auto">
             <Container>
                 <Row>
                     <Col md={4} className="text-center">
@@ -22,15 +22,22 @@ const Footer = () => {
                     </Col>
                     <Col md={4} className="text-center">
                         <h5>Следите за нами</h5>
-                        <div>
-                            <a href="https://facebook.com" className="text-white mx-2"><FaFacebook size={28} /></a>
-                            <a href="https://twitter.com" className="text-white mx-2"><FaTwitter size={28} /></a>
-                            <a href="https://instagram.com" className="text-white mx-2"><FaInstagram size={28} /></a>
+                        <div className="flex justify-center mt-2">
+                            <a href="https://facebook.com" className="text-white mx-2">
+                                <FaFacebook size={28}/>
+                            </a>
+                            <a href="https://twitter.com" className="text-white mx-2">
+                                <FaTwitter size={28}/>
+                            </a>
+                            <a href="https://instagram.com" className="text-white mx-2">
+                                <FaInstagram size={28}/>
+                            </a>
                         </div>
+
                     </Col>
                 </Row>
-                <Row className="mt-4">
-                    <Col className="text-center">
+                <Row>
+                    <Col className="text-center mt-5">
                         <p className="mb-0">&copy; {new Date().getFullYear()} Магазин Кроссовок. Все права защищены.</p>
                         <p>
                             <a href="/privacy-policy" className="text-white">Политика конфиденциальности</a> |

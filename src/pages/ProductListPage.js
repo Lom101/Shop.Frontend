@@ -63,7 +63,7 @@ const ProductListPage = observer (() => {
         productStore.pageNumber, productStore.pageSize]);
    
     return (
-        <Container fluid className='mb-3 mt-4 ms-2 pe-4'>
+        <Container fluid className='mb-3 mt-4 pe-4'>
             <Row className="shop-content">
                 <Col md={2}>
                     <FilterPanel/>

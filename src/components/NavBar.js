@@ -22,7 +22,7 @@ const NavBar = observer(() => {
     function findCategoryByName(name) {
         return productStore.categories.find(category => category.name === name);
     }
-      
+
 
     return (
         // d-flex justify-content-between
@@ -30,9 +30,9 @@ const NavBar = observer(() => {
             <Container fluid>
                 <Nav className="me-autor">
                     <Nav.Link as={NavLink} to={MAIN_ROUTE}>
-                        Магазин 
+                        Магазин
                     </Nav.Link>
-                    
+
                     <Nav.Link onClick={() => {
                         productStore.setSelectedCategory(findCategoryByName("Women's"));
                         navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
@@ -68,7 +68,7 @@ const NavBar = observer(() => {
                         </Nav.Item>
                     ) : (
                         <Nav.Link as={NavLink} to={LOGIN_ROUTE} className="navbar-button">
-                            Авторизация
+                        Авторизация
                         </Nav.Link>
                     )}
                 </Nav>

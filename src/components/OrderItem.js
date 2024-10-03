@@ -3,7 +3,7 @@ import { Card, Button, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 
 const OrderItem = ({ order }) => {
     return (
-        <Card className="mb-4 shadow-sm">
+        <Card className="mt-4 mb-4 ms-5 me-5 shadow-sm">
             <Card.Header className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Заказ #{order.id}</h5>
                 <Button variant="outline-secondary" size="sm">Детали</Button>

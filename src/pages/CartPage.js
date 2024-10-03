@@ -23,12 +23,12 @@ const CartPage = observer(() => {
     };
 
     return (
-        <div className="container mb-5 pt-4">
-            <h1 className="mb-5 text-center">Корзина</h1>
+        <div className="container mb-5 p-5">
+            <h1 className="mb-4 text-3xl font-bold text-center">Корзина</h1>
             {cartStore.cartItems.length === 0 ? (
                 <p className="text-center fs-5">Ваша корзина пуста.</p>
             ) : (
-                <Card className="shadow-sm">
+                    <Card className="shadow-sm">
                     <ListGroup variant="flush">
                         {cartStore.cartItems.map(item => (
                             <ListGroup.Item
