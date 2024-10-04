@@ -21,25 +21,24 @@ const MainCarousel = () => {
   ];
 
   return (
-    <Container fluid className="p-0"> {/* Отступ сверху для Navbar */}
-      <Carousel>
-        {slides.map((slide, index) => (
-          <Carousel.Item key={index}>
-            <img
-              className="d-block w-100" // Адаптивная ширина через Bootstrap
-              src={slide.src}
-              alt={`Слайд ${index + 1}`}
-              // Используем встроенные классы Bootstrap для адаптации высоты
-              style={{ maxHeight: '85vh', objectFit: 'cover' }} 
-            />
-            <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-3"> 
-              <h3>{slide.caption}</h3>
-              <p>{slide.description}</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        ))}
-      </Carousel>
-    </Container>
+      <Container fluid className="p-0"> {/* Убираем все отступы */}
+        <Carousel interval={3000} fade>
+          {slides.map((slide, index) => (
+              <Carousel.Item key={index}>
+                <img
+                    className="d-block w-100 transition-transform duration-1000 ease-in-out"
+                    src={slide.src}
+                    alt={`Слайд ${index + 1}`}
+                    style={{ maxHeight: '85vh', objectFit: 'cover' }}
+                />
+                <Carousel.Caption className="bg-gradient-to-b from-black/60 to-transparent rounded-lg p-4 animate-fadeIn transition-opacity duration-700 ease-in-out">
+                  <h3 className="text-2xl md:text-4xl font-bold text-gray-200 drop-shadow-lg">{slide.caption}</h3>
+                  <p className="text-md md:text-lg text-gray-200 drop-shadow-md">{slide.description}</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+          ))}
+        </Carousel>
+      </Container>
   );
 };
 

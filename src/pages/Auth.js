@@ -2,7 +2,6 @@ import React, {useContext, useState } from 'react';
 import {Button, Card, Container, Form} from "react-bootstrap";
 import {NavLink, useLocation} from "react-router-dom";
 import {LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE} from "../utils/consts";
-import '../assets/css/auth.css'
 import {login, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from 'react-router-dom';

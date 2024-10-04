@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { ListGroup, Form, Row, Col, Button } from "react-bootstrap";
@@ -10,10 +10,18 @@ const FilterPanel = observer(() => {
     const [minPrice, setMinPrice] = useState(productStore.selectedMinPrice || productStore._minPrice);
     const [maxPrice, setMaxPrice] = useState(productStore.selectedMaxPrice || productStore._maxPrice);
 
-    const handlePriceChange = () => {
-        productStore.setSelectedMinPrice(minPrice);
-        productStore.setSelectedMaxPrice(maxPrice);
-    };
+    // Установка таймера для применения цен после завершения ввода
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            productStore.setSelectedMinPrice(minPrice);
+            productStore.setSelectedMaxPrice(maxPrice);
+        }, 500); // 500 мс задержки
+
+        return () => {
+            clearTimeout(handler); // Очистка таймера при изменении или размонтировании
+        };
+    }, [minPrice, maxPrice, productStore]);
+
 
     const clearFilters = () => {
         productStore.setSelectedCategory('');
@@ -28,7 +36,7 @@ const FilterPanel = observer(() => {
     };
 
     return (
-        <div className="border p-3 mb-4 bg-light rounded">
+        <div className="border p-3 mb-4 bg-white rounded shadow-sm">
             <h5 className="fw-bold ps-1 mb-1">Категории</h5>
             <ListGroup className="mb-2">
                 <ListGroup.Item
@@ -104,14 +112,7 @@ const FilterPanel = observer(() => {
             </Form.Control>
 
             <h5 className="fw-bold ps-1 mb-1">Размер</h5>
-            <div style={{
-                maxHeight: '150px',
-                overflowY: 'auto',
-                border: '1px solid #ced4da',
-                borderRadius: '0.25rem',
-                padding: '0.5rem',
-                marginBottom: '0.5rem'
-            }}>
+            <div className="max-h-36 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
                 {Array.isArray(productStore.sizes) && productStore.sizes.length > 0 ? (
                     productStore.sizes.map((size) => (
                         <Form.Check
@@ -139,7 +140,7 @@ const FilterPanel = observer(() => {
 
             <h5 className="fw-bold ps-1 mb-1">Цена</h5>
             <Row className="mb-2">
-                <Col>
+            <Col>
                     <Form.Control
                         type="number"
                         placeholder="Мин"
@@ -157,17 +158,16 @@ const FilterPanel = observer(() => {
                 </Col>
             </Row>
 
-            <Button variant="primary" className="w-100 mb-2" onClick={handlePriceChange}>Применить</Button>
-
-            <Button variant="secondary" className="w-100 mb-2" onClick={clearFilters}>Очистить фильтры</Button>
-
             <h5 className="fw-bold ps-1 mb-1">В наличии</h5>
             <Form.Check
+                className="mb-2"
                 type="checkbox"
                 label="Показать только товары в наличии"
                 checked={productStore.selectedInStock || false}
                 onChange={(e) => productStore.setSelectedInStock(e.target.checked)}
             />
+            <Button variant="primary" className="w-100 mb-2 shadow" onClick={clearFilters}>Очистить фильтры</Button>
+
         </div>
     );
 });

@@ -2,3 +2,15 @@
 .dropdown-toggle::after {
     display: none !important; /* Убирает стрелку */
 }
+/* Прозрачный серый фон для элементов при наведении */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: rgba(88, 88, 88, 0.5) !important; /* Легкий серый фон с прозрачностью */
+    color: inherit; /* Сохраняем текущий цвет текста */
+}
+
+/* Прозрачный серый фон для активного элемента */
+.dropdown-item.active {
+    background-color: rgba(100, 100, 100, 0.5) !important; /* Легкий серый фон с прозрачностью */
+    color: inherit; /* Сохраняем текущий цвет текста */
+}

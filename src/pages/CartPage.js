@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { Card, Button, ListGroup, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import {CHECKOUT_ROUTE} from "../utils/consts";
+import { FaTrash } from 'react-icons/fa'; // Importing the trash icon
 
 const CartPage = observer(() => {
     const { cartStore } = useContext(Context);
@@ -33,10 +34,10 @@ const CartPage = observer(() => {
                         {cartStore.cartItems.map(item => (
                             <ListGroup.Item
                                 key={`${item.productId}-${item.modelId}-${item.sizeId}`}
-                                className="d-flex justify-content-between align-items-center py-3"
+                                className="d-flex justify-content-between align-items-center py-2"
                             >
                                 <Row className="w-100 align-items-center">
-                                    <Col md={1} className="text-center">
+                                    <Col md={1} className="d-flex justify-content-center text-center">
                                         {/* Изображение модели */}
                                         <img
                                             src={`${process.env.REACT_APP_API_URL}/images/${item.model.photos[0]?.fileName}`}
@@ -45,8 +46,8 @@ const CartPage = observer(() => {
                                             style={{ height: '80px', objectFit: 'contain' }}
                                         />
                                     </Col>
-                                    <Col md={8}>
-                                        <h5 className="mb-2 fw-bold">{item.name}</h5>
+                                    <Col md={8} className="flex md:flex-row md:items-center md:space-x-4">
+                                        <h5 className="fw-bold">{item.name}</h5>
                                         <div className="text-muted">
                                             <small>Модель: {item.model.color.name}</small>
                                         </div>
@@ -60,21 +61,25 @@ const CartPage = observer(() => {
                                             <small>Количество: {item.quantity}</small>
                                         </div>
                                     </Col>
+
+
                                     <Col md={3} className="d-flex justify-content-end align-items-center">
-                                        <Button
-                                            variant="danger"
-                                            className="me-3"
+                                        <div className="fw-bold text-muted me-4">
+                                        <small>Сумма: {item.quantity*item.model.price} руб</small>
+                                        </div>
+                                        {/* Trash icon with Tailwind CSS classes */}
+                                        <FaTrash
+                                            className="text-red-600 cursor-pointer text-2xl transition-transform duration-300 ease-in-out
+                                                hover:scale-110"
                                             onClick={() => cartStore.removeFromCart(item.productId, item.modelId, item.sizeId)}
-                                        >
-                                            Удалить
-                                        </Button>
+                                        />
                                     </Col>
                                 </Row>
                             </ListGroup.Item>
                         ))}
                     </ListGroup>
                     <Card.Body className="d-flex flex-column align-items-end p-4">
-                        <h4 className="mb-3 fw-bold">
+                        <h4 className="text-xl mb-3 fw-bold">
                             Итого: {cartStore.cartItems.reduce((total, item) => total + item.model.price * item.quantity, 0)} руб
                         </h4>
                         <Button variant="success" className="w-100 py-2 fs-5" onClick={handleCheckout}>

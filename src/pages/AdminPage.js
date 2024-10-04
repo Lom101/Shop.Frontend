@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Button, Container} from "react-bootstrap";
-import '../assets/css/admin.css'
 import CreateCategory from "../components/modals/CreateCategory";
 import CreateProduct from "../components/modals/CreateProduct";
 

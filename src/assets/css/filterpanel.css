@@ -2,13 +2,14 @@
     transition: background-color 0.3s, border-color 0.3s; /* Плавный переход */
 }
 
+
 .filterPanel-item.active {
-    background-color: #e7e7e7; /* Серый цвет фона */
+    background-color: #d9d8d8; /* Серый цвет фона */
     color: #000; /* Цвет текста */
-    border: 2px solid #b3b3b3; /* Цвет контура для активного состояния */
+    border: 2px solid #c2c2c2; /* Цвет контура для активного состояния */
 }
 
 .filterPanel-item:hover {
-    background-color: #e7e7e7; /* Цвет фона при наведении */
-    border: 2px solid #b3b3b3; /* Цвет контура при наведении */
+    background-color: #f4f4f4; /* Цвет фона при наведении */
+    border: 2px solid #e1e1e1; /* Цвет контура при наведении */
 }

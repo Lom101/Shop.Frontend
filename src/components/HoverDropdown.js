@@ -23,7 +23,7 @@ const HoverDropdown = ({ logout_user }) => {
             <NavDropdown
                 id="nav-dropdown-dark-example"
                 title={
-                    <span className="flex items-center">
+                    <span className="flex items-center transition-transform transform hover:scale-105 duration-200">
                         <FaUser className="mr-2 mb-0" />
                         Личный кабинет
                     </span>
@@ -35,12 +35,28 @@ const HoverDropdown = ({ logout_user }) => {
                 className="dropdown-toggle"
             >
                 {/* Ссылки на внутренние маршруты */}
-                <NavDropdown.Item as={NavLink} to={PROFILE_ROUTE}>Профиль</NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to={ORDERS_ROUTE}>Мои заказы</NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to={SETTINGS_ROUTE}>Настройки</NavDropdown.Item>
+                <NavDropdown.Item
+                    as={NavLink} to={PROFILE_ROUTE}
+                >
+                    Профиль
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                    as={NavLink} to={ORDERS_ROUTE}
+                >
+                    Мои заказы
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                    as={NavLink} to={SETTINGS_ROUTE}
+                >
+                    Настройки
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 {/* Кнопка выхода */}
-                <NavDropdown.Item onClick={logout_user}>Выйти</NavDropdown.Item>
+                <NavDropdown.Item
+                    onClick={logout_user}
+                >
+                    Выйти
+                </NavDropdown.Item>
             </NavDropdown>
         </Nav>
     );

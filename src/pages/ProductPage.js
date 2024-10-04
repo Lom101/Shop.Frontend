@@ -26,82 +26,96 @@ const ProductPage = () => {
     };
 
     return (
-        <Container className="product-page mt-4 mb-3">
+        <Container className="mt-4 mb-3">
             <Row className="g-4">
                 {/* Левая колонка: изображение продукта */}
                 <Col md={4}>
                     <Image
                         src={`${process.env.REACT_APP_API_URL}/images/${selectedModel ? selectedModel.photos[0].fileName : product.models[0]?.photos[0]?.fileName}`}
-                        className="product-big-image rounded border shadow-sm"
-                        style={{ height: '400px', objectFit: 'contain' }}
+                        className="rounded shadow"
+                        style={{ height: '450px', objectFit: 'contain' }}
                     />
                 </Col>
 
                 {/* Средняя колонка: название и описание продукта */}
                 <Col md={4}>
-                    <h2 className="product-title">{product.name}</h2>
-                    <div className="product-description p-3 border rounded shadow-sm">
+                    <h2 className="text-2xl fw-bold">{product.name}</h2>
+
+
+                    {/* Отображение рейтинга */}
+                    <div className="d-flex align-items-center">
+                        {product.averageRating > 0 ? (
+                            <>
+                                {/* Display rating with one decimal and "/5" */}
+                                <span className="text-l pe-1 ps-2">{product.averageRating.toFixed(1)}</span>
+
+                                {/* Display stars based on the rating */}
+                                {[...Array(5)].map((_, index) => {
+                                    const roundedRating = Math.round(product.averageRating * 2) / 2; // Round to the nearest 0.5
+                                    const starClass = roundedRating >= index + 1
+                                        ? 'text-warning'
+                                        : roundedRating >= index + 0.5
+                                            ? 'text-warning half-star' // For partial stars (you may add special CSS for half-star)
+                                            : 'text-muted';
+
+                                    return (
+                                        <FaStar
+                                            key={index}
+                                            className={`me-1 ${starClass}`}
+                                            size={20}
+                                        />
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            <>
+                                {/* Display "No reviews" and 5 gray stars if rating is 0 */}
+                                <span className="text-l pe-1 ps-2">Отзывов нет</span>
+                                {[...Array(5)].map((_, index) => (
+                                    <FaStar
+                                        key={index}
+                                        className="me-1 text-muted"
+                                        size={20}
+                                    />
+                                ))}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="mt-2 border rounded shadow-sm p-3 bg-light">
                         {product.description}
                     </div>
 
-                    {/* Отображение рейтинга */}
-                    <div className="product-rating d-flex align-items-center">
-                        <p className="m-0 me-2">Рейтинг:</p>
-                        {[...Array(5)].map((_, index) => (
-                            <FaStar
-                                key={index}
-                                className={`me-1 ${index < product.averageRating ? 'text-warning' : 'text-muted'}`} // Звезды окрашиваются в желтый, если рейтинг соответствует
-                                size={20} // Размер звезды
-                            />
-                        ))}
-                        <span>{product.averageRating} из 5</span>
-                    </div>
 
-                    {/* Отображение доступных размеров */}
-                    <div className="mt-3">
-                        <h5>Доступные размеры:</h5>
-                        <div>
-                            {product.models.flatMap(model => model.sizes.filter(size => size.isAvailable)).map(size => (
-                                <Badge key={size.id} pill bg="success" className="me-1 mb-1">
-                                    {size.name}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
                 </Col>
 
                 {/* Правая колонка: блок добавления в корзину */}
                 <Col md={4}>
-                    <Card className="shadow-sm p-3">
-                        <h2 className="price-title">
-                            Цена: <span className="text-success">{selectedModel ? selectedModel.price : product.models[0]?.price} руб</span>
-                        </h2>
-
+                    <Card className="shadow-sm p-4">
                         {/* Модели */}
-                        <h5>Выберите модель:</h5>
+                        <h5 className="fw-bold mb-3">Выберите модель:</h5>
                         <Row>
                             {product.models.map(model => (
-                                <Col key={model.id} xs={6} className="mb-2">
+                                <Col key={model.id} xs={5} className="mb-2">
                                     <Card
-                                        className={`model-card ${selectedModel?.id === model.id ? 'border-primary' : ''}`}
+                                        className={`model-card ${selectedModel?.id === model.id ? 'border-success' : 'border-light'} shadow-sm`}
                                         onClick={() => {
                                             setSelectedModel(model);
                                             setSelectedSize(null);
                                         }}
+                                        style={{cursor: 'pointer'}}
                                     >
-                                        <Card.Body>
-                                            <Card.Title>{model.color.name}</Card.Title>
-                                            <Card.Text>
-                                                Цена: {model.price} руб
-                                            </Card.Text>
+                                        <Card.Body className="p-2 text-center">
+                                            <Card.Title className="fs-6 mb-1">{model.color.name}</Card.Title>
                                         </Card.Body>
                                     </Card>
                                 </Col>
                             ))}
                         </Row>
 
-                        {/* Выбор размеров */}
-                        <h5 className="mt-3">Выберите размер:</h5>
+
+                        {/* Size Selection */}
+                        <h5 className="fw-bold mt-3 mb-2">Выберите размер:</h5>
                         <Row>
                             {selectedModel?.sizes.filter(size => size.isAvailable).map(size => (
                                 <Col key={size.id} xs={4} className="mb-2">
@@ -115,6 +129,11 @@ const ProductPage = () => {
                                 </Col>
                             ))}
                         </Row>
+
+                        <h2 className="fw-bold mt-3">
+                            Цена: <span
+                            className="text-success">{selectedModel ? selectedModel.price : product.models[0]?.price} руб</span>
+                        </h2>
 
                         <Button
                             className="w-100 mt-3"
