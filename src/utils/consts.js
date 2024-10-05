@@ -15,3 +15,5 @@ export const CART_ROUTE = '/cart';
 
 
 export const CHECKOUT_ROUTE = '/checkout';
+
+export const COMPLETION_ROUTE = '/completion';

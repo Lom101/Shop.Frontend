@@ -11,9 +11,10 @@ import CartPage from "./pages/CartPage";
 import {
     ADMIN_ROUTE, PRODUCT_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE,
     ORDERS_ROUTE, SETTINGS_ROUTE, PROFILE_ROUTE, MAIN_ROUTE, PRODUCT_LIST_ROUTE,
-    CART_ROUTE, CHECKOUT_ROUTE
+    CART_ROUTE, CHECKOUT_ROUTE, COMPLETION_ROUTE
 } from "./utils/consts";
 import CheckoutPage from "./pages/CheckoutPage";
+import CompletionPaymentPage from "./pages/CompletionPaymentPage";
 
 export const authRoutes = [
     {
@@ -36,7 +37,10 @@ export const authRoutes = [
         path: CHECKOUT_ROUTE,
         Component: CheckoutPage
     },
-
+    {
+        path: COMPLETION_ROUTE,
+        Component: CompletionPaymentPage
+    }
 ];
 
 export const publicRoutes = [
