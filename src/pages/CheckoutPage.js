@@ -1,23 +1,24 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from '@stripe/react-stripe-js';
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import CheckoutForm from "../components/CheckoutForm";
 import {createPaymentIntent} from "../http/stripeAPI";
-
+import {Context} from "../index";
 
 const stripePromise = loadStripe("pk_test_51Q53yhKGJp4CXm6iZcGeA1nSqBrOUSfL9eDP3ZOPK4jNa0SnzmDKBBYHVuxqNc3VepeXyICm7mfOUSKWwmdLFPw700Exd3W2RT");
 
 
 const CheckoutPage= observer(() => {
     const [ clientSecret, setClientSecret ] = useState(null);
-
+    const { cartStore } = useContext(Context);
 
     useEffect(() => {
         const fetchClientSecret = async () => {
             try {
-                const data = await createPaymentIntent(); // В будущем здесь будет сумма из корзины
-                setClientSecret(data);  // убедитесь, что `clientSecret` приходит как часть объекта `data`
+                const cartItems = cartStore.cartItems;  // Get cart items
+                const data = await createPaymentIntent(cartItems); // В будущем здесь будет сумма из корзины
+                setClientSecret(data);  // Set only clientSecret
             } catch (error) {
                 console.error("Ошибка при получении clientSecret", error);
             }
