@@ -7,9 +7,8 @@ export default [
   {
     languageOptions: {
       globals: {
-        ...globals.browser,  // Распаковать глобальные переменные
-        // Можете добавить свои глобальные переменные здесь, если нужно
-        process: "readonly", // Добавьте это для определения `process`
+        ...globals.browser,
+        process: "readonly",
 
       },
     },

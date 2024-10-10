@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
-import {fetchAddresses, fetchOrders} from "../http/userAPI";
-import {jwtDecode} from "jwt-decode";
+import { fetchAddresses, fetchOrders } from "../http/userAPI";
+import { jwtDecode } from "jwt-decode";
 
 export default class UserStore {
     constructor() {
@@ -10,6 +10,13 @@ export default class UserStore {
         this._orders = [];
         this.loadInitialData();
         makeAutoObservable(this);
+    }
+
+    reset() {
+        this._isAuth = false;
+        this._user = null;
+        this._addresses = [];
+        this._orders = [];
     }
 
     setIsAuth(bool) {
@@ -24,7 +31,7 @@ export default class UserStore {
         this._addresses = addresses;
     }
 
-    setOrders(orders){
+    setOrders(orders) {
         this._orders = orders;
     }
 
@@ -33,41 +40,25 @@ export default class UserStore {
         if (token) {
             this.setIsAuth(true);
             const decoded = jwtDecode(token);
-            const userData = {
-                id: decoded.Id,
-                email: decoded.email,
-            };
-            this.setUser(userData);
-
-            try {
-                console.log('Id пользователя перед отправкой запроса', this.user.id);
-                const addresses = await fetchAddresses(this.user.id); // Используем await
-                this.setAddresses(addresses);
-                console.log('Адреса юзера', this.addresses);
-            } catch (error) {
-                console.error('Ошибка при загрузке адресов:', error);
-            }
-
-            try {
-                console.log('Id пользователя перед отправкой запроса', this.user.id);
-                const orders = await fetchOrders(this.user.id); // Используем await
-                this.setOrders(orders);
-                console.log('Заказы юзера', this.addresses);
-            } catch (error) {
-                console.error('Ошибка при загрузке заказов:', error);
-            }
+            this.setUser({ id: decoded.Id, email: decoded.email });
+            await this.fetchUserData();
         }
     }
 
-    async fetchAddresses() {
+    async fetchUserData() {
+        const userId = this.user.id;
+
         try {
-            const addresses = await fetchAddresses(this.user.id); // Замените на свой API
+            const [addresses, orders] = await Promise.all([
+                fetchAddresses(userId),
+                fetchOrders(userId),
+            ]);
             this.setAddresses(addresses);
+            this.setOrders(orders);
         } catch (error) {
-            console.error('Ошибка при загрузке адресов:', error);
+            console.error('Ошибка при загрузке данных пользователя:', error);
         }
     }
-
 
     isAdmin() {
         const token = localStorage.getItem('authToken');
@@ -88,8 +79,7 @@ export default class UserStore {
         return this._addresses;
     }
 
-    get orders(){
+    get orders() {
         return this._orders;
     }
 }
-

@@ -2,57 +2,32 @@ import {$host, $authHost} from './index';
 import { jwtDecode } from 'jwt-decode';
 
 export const registration = async (email, username, password) => {
-    try {
-      const response = await $host.post('api/Auth/registration', { email, username, password });
+      const response = await $host.post('api/Auth/registration', { email, password });
       const { token } = response.data;
       localStorage.setItem('authToken', token);
       return jwtDecode(token);
-    } catch (error) {
-        // // Проверяем, если ошибка это ошибка от сервера (например, ошибка HTTP)
-        // if (error.response) {
-        //     // Сервер ответил с кодом состояния, который не в диапазоне 2xx
-        //     console.error('Server Error:', error.response.data.message || error.response.statusText);
-        //     throw new Error(error.response.data.message || 'Server error');
-        // } else if (error.request) {
-        //     // Запрос был отправлен, но ответ не был получен
-        //     console.error('Network Error:', error.request);
-        //     throw new Error('Network error');
-        // } else {
-        //     // Что-то пошло не так при настройке запроса
-        //     console.error('Error:', error.message);
-        //     throw new Error(error.message || 'Unknown error');
-        // }
-    }
 };
-  
 
 export const login = async (email, password) => {
-    try {
-      const response = await $host.post('api/Auth/login', { email, password });
-      
-      if (!response) {
+        const response = await $host.post('api/Auth/login', { email, password });
+
+        if (!response) {
         throw new Error(`HTTP ошибка: ${response.status}`);
-      }
+        }
 
-      console.log("токены", response.data);
-  
-      const accessToken = response.data.token;
-      const refreshToken = response.data.refreshToken;
-      
-      localStorage.setItem('authToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      
-      console.log("токен - ", localStorage.getItem('authToken'));
+        console.log("токены", response.data);
 
-      return jwtDecode(accessToken);
-    } catch (error) {
-        console.log('Данные ошибки:', error);
-        if (error instanceof Error) {
-            throw new Error(`${error}`);
-        } 
-    }
-  };
-  
+        const accessToken = response.data.token;
+        const refreshToken = response.data.refreshToken;
+
+        localStorage.setItem('authToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+
+        console.log("токен - ", localStorage.getItem('authToken'));
+
+        return jwtDecode(accessToken);
+};
+// error.response.data.errors[0]
 
 export const refreshToken = async () => {
     try {
@@ -71,13 +46,30 @@ export const refreshToken = async () => {
 };
 
 export const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Очистка cookies
+    document.cookie.split(";").forEach(function(cookie) {
+        document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
 };
 
-export const addAddress = async (addressData) => {
-    const response = await $authHost.post('/api/address', addressData);
-    return response;
+// Отправка запроса для сброса пароля (на email)
+export const forgotPasswordRequest = async (email) => {
+    const {data} = await $host.post('api/auth/forgot_password', {email} );
+    return data;
+}
+
+// Завершение сброса пароля с использованием кода
+export const resetPassword = async (email, Code, newPassword) => {
+    const {data} = await $host.post('api/Auth/reset_password', {email, Code, newPassword});
+    return data;
+};
+
+export const fetchProfile = async () => {
+    const response = await $authHost.get(`api/Profile`);
+    return response.data;
 };
 
 // Метод для получения всех адресов пользователя
@@ -88,11 +80,6 @@ export const fetchAddresses = async (userId) => {
     return response.data;
 };
 
-export const createOrder = async (order) => {
-    const {data} = await $authHost.post('api/order', order);
-    return data;
-}
-
 // Метод для получения всех заказов пользователя
 export const fetchOrders = async (userId) => {
     const response = await $authHost.get(`api/Order/get_by_user_id`, {
@@ -100,3 +87,15 @@ export const fetchOrders = async (userId) => {
     });
     return response.data;
 };
+
+export const createOrder = async (paymentIntentId) => {
+    const {data} = await $authHost.post('api/payment/create_order', {paymentIntentId} );
+    return data;
+}
+
+export const fetchReviews = async (userId) => {
+    const response = await $authHost.get(`api/Review/get_by_user_id`, {
+        params: { userId }
+    });
+    return response.data;
+}

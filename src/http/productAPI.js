@@ -20,21 +20,6 @@ export const fetchCategories= async () => {
     return data;
 }
 
-// export const fetchBrands = async () => {
-//     const {data} = await $host.get('api/brand/');
-//     return data;
-// }
-//
-// export const fetchSizes = async () => {
-//     const {data} = await $host.get('api/size/');
-//     return data;
-// }
-//
-// export const fetchColors = async () => {
-//     const {data} = await $host.get('api/color/');
-//     return data;
-// }
-
 export const fetchProductFilterOptions = async () => {
     const {data} = await $host.get('api/product/filter_options');
     return data;

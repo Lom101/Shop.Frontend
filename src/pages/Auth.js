@@ -1,13 +1,12 @@
 import React, {useContext, useState } from 'react';
-import {Button, Card, Container, Form} from "react-bootstrap";
+import {Alert, Button, Card, Container, Form} from "react-bootstrap";
 import {NavLink, useLocation} from "react-router-dom";
-import {LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE} from "../utils/consts";
+import {LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE, RESET_PASSWORD_ROUTE} from "../utils/consts";
 import {login, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from 'react-router-dom';
 import {Context} from "../index";
 import {jwtDecode} from 'jwt-decode';
-
 
 const Auth = observer (() => {
     const {userStore} = useContext(Context);
@@ -18,12 +17,15 @@ const Auth = observer (() => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [error, setError] = useState(null); // Состояние для хранения ошибки
+
     const click = async () => {
         try {
+            setError(null); // Сбрасываем ошибку перед попыткой логина/регистрации
             if(isLogin){
                await login(email, password)
             } else {
-               await registration(email, password);
+               await registration(email, email.split("@")[0], password);
             }
 
             const token = localStorage.getItem('authToken');
@@ -44,9 +46,8 @@ const Auth = observer (() => {
             userStore.setIsAuth(true);   
             navigate(MAIN_ROUTE);
         } catch (error) {
-            let errorMessage = error.message;
-            console.error(errorMessage);
-            alert(errorMessage);
+            console.error(error);
+            setError(error.response.data.errors[0] || error.response.data.errors.Username[0]); // Устанавливаем сообщение об ошибке
         }
     };
 
@@ -54,6 +55,13 @@ const Auth = observer (() => {
         <Container className="d-flex justify-content-center align-items-center " style={{ height: '85vh' }}>
                     <Card className="p-5 card-auth">
                         <h2 className="m-auto">{isLogin ? 'Авторизация' : 'Регистрация'}</h2>
+
+                        {error && (
+                            <Alert variant="danger" className="mt-3">
+                                {error}
+                            </Alert>
+                        )}
+
                         <Form className="" style={{  width: '60vh' }}>
                             <Form.Control
                                 className="mt-3"
@@ -86,7 +94,11 @@ const Auth = observer (() => {
                                     {isLogin ? 'Войти' : 'Регистрация'}
                                 </Button>
                             </div>
-
+                            {isLogin && (
+                                <div className="mt-3">
+                                    <NavLink to={RESET_PASSWORD_ROUTE}>Забыли пароль?</NavLink>
+                                </div>
+                            )}
                         </Form>
                     </Card>
                 </Container>

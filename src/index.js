@@ -7,7 +7,6 @@ import UserStore from "./store/UserStore";
 import ProductStore from "./store/ProductStore";
 import CartStore from './store/CartStore';
 
-
 export const Context = createContext(null);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

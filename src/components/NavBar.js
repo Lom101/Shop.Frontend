@@ -12,11 +12,15 @@ import { FaShoppingCart } from "react-icons/fa";
 const NavBar = observer(() => {
     const { userStore } = useContext(Context);
     const { productStore } = useContext(Context);
+    const { cartStore } = useContext(Context);
     const navigate = useNavigate();
 
     const logout_user = () => {
         userStore.setUser(null);
         userStore.setIsAuth(false);
+        userStore.reset();
+        productStore.reset();
+        cartStore.reset();
         logout();
     };
 

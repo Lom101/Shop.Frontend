@@ -19,7 +19,6 @@ const ProductListPage = observer (() => {
             productStore.setColors(data.colors);
             productStore.setMinPrice(data.minPrice);
             productStore.setMaxPrice(data.maxPrice);
-            //productStore.setInStock(data.inStock);
         });
     }, [productStore]);
 
@@ -58,7 +57,7 @@ const ProductListPage = observer (() => {
             productStore.setProducts(data.items);
             productStore.setTotalCount(data.totalCount);
         });
-    }, [productStore.selectedCategory, productStore.selectedBrand, productStore.selectedSizes,
+    }, [productStore, productStore.selectedCategory, productStore.selectedBrand, productStore.selectedSizes,
         productStore.selectedColor, productStore.selectedMinPrice, productStore.selectedMaxPrice, productStore.selectedInStock,
         productStore.pageNumber, productStore.pageSize]);
    

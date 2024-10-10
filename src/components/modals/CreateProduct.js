@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Col, Dropdown, Form, Modal, Row, Alert} from "react-bootstrap";
+import {Button,  Dropdown, Form, Modal,  Alert} from "react-bootstrap";
 import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 import {createProduct, fetchCategories} from "../../http/productAPI";

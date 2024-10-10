@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 export default class ProductStore {
     constructor() {
-        // поля 
+        // Параметры фильтрации
         this._products = [];
         this._categories = [];
         this._brands = [];
@@ -10,9 +10,8 @@ export default class ProductStore {
         this._colors = [];
         this._minPrice = null;
         this._maxPrice = null;
-        this._inStock = true;
 
-        // выбранные поля для фильтрации
+        // Выбранные параметры фильтрации
         this._selectedCategory = '';
         this._selectedBrand = '';
         this._selectedSizes = [];
@@ -21,20 +20,42 @@ export default class ProductStore {
         this._selectedMaxPrice = null;
         this._selectedInStock = true;
 
-        // поля для пагинации
-        this._totalCount = 0; // всего элементов
-        this._pageNumber = 1; // номер выбранной страницы
-        this._pageSize = 12; // количество элементов на странице
+        // Параметры пагинации
+        this._totalCount = 0;
+        this._pageNumber = 1;
+        this._pageSize = 12;
+
         makeAutoObservable(this);
     }
-    // Сеттеры
+
+    reset() {
+        this._products = [];
+        this._categories = [];
+        this._brands = [];
+        this._sizes = [];
+        this._colors = [];
+        this._minPrice = null;
+        this._maxPrice = null;
+        this._selectedCategory = '';
+        this._selectedBrand = '';
+        this._selectedSizes = [];
+        this._selectedColor = '';
+        this._selectedMinPrice = null;
+        this._selectedMaxPrice = null;
+        this._selectedInStock = true;
+        this._totalCount = 0;
+        this._pageNumber = 1;
+        this._pageSize = 12;
+    }
+
+    // Методы установки
     setCategories(categories) {
         this._categories = categories;
     }
 
     setProducts(products) {
-        console.log('Products set:', products); // Для отладки
         this._products = products;
+        this.setTotalCount(products.length); // Обновление общего количества
     }
 
     setBrands(brands) {
@@ -46,69 +67,53 @@ export default class ProductStore {
     }
 
     setColors(colors) {
-        this._colors = colors; 
+        this._colors = colors;
     }
 
     setMinPrice(minPrice) {
         this._minPrice = minPrice;
     }
-
     setMaxPrice(maxPrice) {
         this._maxPrice = maxPrice;
     }
 
-    setInStock(inStock) {
-        this._inStock = inStock;
-    }
-
     setSelectedCategory(category) {
-        console.log('Selected category:', category?.id);
         this._selectedCategory = category;
         this.setPage(1); // Сброс страницы
     }
 
     setSelectedBrand(brand) {
-        console.log('Selected brand:', brand?.id);
         this._selectedBrand = brand;
     }
 
     setSelectedSizes(sizes) {
-        // Проверяем, является ли sizes массивом, и выводим все айдишники
-        const sizeIds = sizes?.map(size => size.id) || []; // Получаем массив айдишников или пустой массив
-        console.log('Selected sizes IDs:', sizeIds);
-        this._selectedSizes = sizes;
+        this._selectedSizes = sizes || [];
     }
 
     setSelectedColor(color) {
-        console.log('Selected color:', color?.id);
         this._selectedColor = color;
     }
 
     setSelectedMinPrice(price) {
-        console.log('Selected min price:', price);
         this._selectedMinPrice = price;
     }
 
     setSelectedMaxPrice(price) {
-        console.log('Selected max price:', price);
         this._selectedMaxPrice = price;
     }
 
     setSelectedInStock(inStock) {
-        console.log('Selected in stock:', inStock);
         this._selectedInStock = inStock;
     }
-
 
     setPage(pageNumber) {
         this._pageNumber = pageNumber;
     }
 
     setTotalCount(totalCount) {
-        console.log('TotalCount set:', totalCount); // Для отладки
         this._totalCount = totalCount;
     }
-    
+
     // Геттеры
     get categories() {
         return this._categories;
@@ -129,23 +134,16 @@ export default class ProductStore {
     get colors() {
         return this._colors;
     }
-
     get minPrice() {
         return this._minPrice;
     }
-
     get maxPrice() {
         return this._maxPrice;
     }
-
-    get inStock() {
-        return this._inStock;
-    }
-
     get selectedCategory() {
         return this._selectedCategory;
     }
-    
+
     get selectedBrand() {
         return this._selectedBrand;
     }
@@ -173,7 +171,7 @@ export default class ProductStore {
     get pageNumber() {
         return this._pageNumber;
     }
-    
+
     get totalCount() {
         return this._totalCount;
     }
@@ -181,4 +179,6 @@ export default class ProductStore {
     get pageSize() {
         return this._pageSize;
     }
+
+
 }

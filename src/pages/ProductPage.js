@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Card, Col, Container, Image, Row, Badge } from "react-bootstrap";
+import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
 import { useParams } from 'react-router-dom';
 import { fetchOneProduct } from "../http/productAPI";
 import { Context } from '../index';
@@ -31,7 +31,7 @@ const ProductPage = () => {
                 {/* Левая колонка: изображение продукта */}
                 <Col md={4}>
                     <Image
-                        src={`${process.env.REACT_APP_API_URL}/images/${selectedModel ? selectedModel.photos[0].fileName : product.models[0]?.photos[0]?.fileName}`}
+                        src={`${process.env.REACT_APP_API_URL}/${selectedModel ? selectedModel.photos[0].url : product.models[0]?.photos[0]?.url}`}
                         className="rounded shadow"
                         style={{ height: '450px', objectFit: 'contain' }}
                     />

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Badge, Button, Card, Col, Modal, Row, Form } from "react-bootstrap";
+import { Badge, Button, Card, Col, Modal,  Form } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { PRODUCT_ROUTE } from "../utils/consts";
 import { Context } from "../index";
@@ -70,7 +70,7 @@ const ProductItem = ({ product }) => {
             <Card className='product-item shadow-sm border-0 transform transition-transform duration-200 hover:scale-105' onClick={handleCardClick}>
                 <Card.Img
                     variant="top"
-                    src={`${process.env.REACT_APP_API_URL}/images/${product.models[0].photos[0].fileName}`}
+                    src={`${process.env.REACT_APP_API_URL}/${product.models[0].photos[0].url}`}
                     alt={product.name}
                     className="cursor-pointer"
                     style={{

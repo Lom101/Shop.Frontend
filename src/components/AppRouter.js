@@ -5,7 +5,7 @@ import {MAIN_ROUTE} from "../utils/consts";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 
-const AppRouter = observer (() => { 
+const AppRouter = observer (() => {
     const {userStore} = useContext(Context);
     return (
         <Routes className="flex-grow-1">
