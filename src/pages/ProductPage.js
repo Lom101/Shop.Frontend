@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
 import { useParams } from 'react-router-dom';
-import { fetchOneProduct } from "../http/productAPI";
+import {fetchAllReviews, fetchOneProduct, fetchReviewsOnProductPage} from "../http/productAPI";
 import { Context } from '../index';
-import { FaStar } from 'react-icons/fa'; // Импортируем иконку звезды
+import { FaStar } from 'react-icons/fa';
 
 const ProductPage = () => {
     const [product, setProduct] = useState({ info: [], models: [] });
+    const [reviews, setReviews] = useState([]); // State for reviews
     const [selectedModel, setSelectedModel] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const { id } = useParams();
@@ -14,7 +15,10 @@ const ProductPage = () => {
 
 
     useEffect(() => {
-        fetchOneProduct(id).then(data => setProduct(data));
+        fetchOneProduct(id).then(data => {
+            setProduct(data);
+            fetchReviewsOnProductPage(id).then(data => setReviews(data)); // Fetch reviews for the product
+        });
     }, [id]);
 
     const addToCart = () => {
@@ -31,7 +35,7 @@ const ProductPage = () => {
                 {/* Левая колонка: изображение продукта */}
                 <Col md={4}>
                     <Image
-                        src={`${process.env.REACT_APP_API_URL}/${selectedModel ? selectedModel.photos[0].url : product.models[0]?.photos[0]?.url}`}
+                        src={`${process.env.REACT_APP_API_URL}/${selectedModel ? selectedModel.photos[0].url : product.models[0]?.photos[0]?.url}?v=@DateTime.UtcNow.Ticks`}
                         className="rounded shadow"
                         style={{ height: '450px', objectFit: 'contain' }}
                     />
@@ -146,6 +150,34 @@ const ProductPage = () => {
                     </Card>
                 </Col>
             </Row>
+
+            {/* Reviews Section */}
+            <div className="mt-5">
+                <h4 className="fw-bold">Отзывы:</h4>
+                {console.log(reviews)}
+                {reviews.length > 0 ? (
+                    <ul className="list-unstyled">
+                        {reviews.map(review => (
+                            <li key={review.id} className="border-bottom mb-3 pb-2">
+                                <div className="d-flex align-items-center">
+                                    <FaStar className="text-warning me-2" />
+                                    <span className="fw-bold">
+                            {review.user ? review.user.userName : 'Anonymous'}
+                        </span>
+                                </div>
+                                <p>{review.text}</p>
+                                <small className="text-muted">
+                                    {new Date(review.created).toLocaleDateString()}
+                                </small>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>Нет отзывов для этого продукта.</p>
+                )}
+            </div>
+
+
         </Container>
     );
 };

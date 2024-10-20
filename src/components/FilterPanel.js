@@ -1,11 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
-import { ListGroup, Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button } from "react-bootstrap";
 import '../assets/css/filterpanel.css'
+import { useLocation } from 'react-router-dom';
 
 const FilterPanel = observer(() => {
     const { productStore } = useContext(Context);
+    const location = useLocation();
 
     const [minPrice, setMinPrice] = useState(productStore.selectedMinPrice || productStore._minPrice);
     const [maxPrice, setMaxPrice] = useState(productStore.selectedMaxPrice || productStore._maxPrice);
@@ -22,6 +24,25 @@ const FilterPanel = observer(() => {
         };
     }, [minPrice, maxPrice, productStore]);
 
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const categoryId = queryParams.get('category');
+
+        if (categoryId) {
+            const selectedCategory = productStore.categories.find(
+                (category) => category.id === +categoryId
+            );
+            productStore.setSelectedCategory(selectedCategory);
+        } else {
+            productStore.setSelectedCategory('');
+        }
+    }, [location.search, productStore.categories]);
+
+    // Используем useEffect для установки начальных значений из productStore
+    useEffect(() => {
+        setMinPrice(productStore.selectedMinPrice || productStore._minPrice);
+        setMaxPrice(productStore.selectedMaxPrice || productStore._maxPrice);
+    }, [productStore]);
 
     const clearFilters = () => {
         productStore.setSelectedCategory('');
@@ -38,81 +59,117 @@ const FilterPanel = observer(() => {
     return (
         <div className="border p-3 mb-4 bg-white rounded shadow-sm">
             <h5 className="fw-bold ps-1 mb-1">Категории</h5>
-            <ListGroup className="mb-2">
-                <ListGroup.Item
-                    className={`filterPanel-item ${'' === productStore.selectedCategory ? 'active' : ''}`}
-                    onClick={() => productStore.setSelectedCategory('')}
-                >
-                    Все
-                </ListGroup.Item>
-                {productStore.categories.length > 0 ? (
-                    productStore.categories.map((category) => (
-                        <ListGroup.Item
-                            key={category.id || category}
-                            className={`filterPanel-item ${productStore.selectedCategory?.id === category.id ? 'active' : ''}`}
-                            // className={`filterPanel-item ${category === productStore.selectedCategory ? 'active' : ''}}`}
-                            onClick={() => {
-                                productStore.setSelectedCategory(category);
-                            }}
-                        >
-                            {category.name || category}
-                        </ListGroup.Item>
-                    ))
-                ) : (
-                    <ListGroup.Item className="filterPanel-item">Нет категорий</ListGroup.Item>
-                )}
-            </ListGroup>
-
-            <h5 className="fw-bold ps-1 mb-1">Бренды</h5>
-            <ListGroup className="mb-2">
-                <ListGroup.Item
-                    className={`filterPanel-item ${'' === productStore.selectedBrand ? 'active' : ''}`}
-                    onClick={() => productStore.setSelectedBrand('')}
-                >
-                    Все бренды
-                </ListGroup.Item>
-                {Array.isArray(productStore.brands) && productStore.brands.length > 0 ? (
-                    productStore.brands.map((brand) => (
-                        <ListGroup.Item
-                            key={brand.id || brand}
-                            className={`filterPanel-item ${brand === productStore.selectedBrand ? 'active' : ''}`}
-                            onClick={() => productStore.setSelectedBrand(brand)}
-                        >
-                            {brand.name || brand}
-                        </ListGroup.Item>
-                    ))
-                ) : (
-                    <ListGroup.Item className="filterPanel-item">Нет брендов</ListGroup.Item>
-                )}
-            </ListGroup>
-
-            <h5 className="fw-bold ps-1 mb-1">Цвет</h5>
             <Form.Control
                 as="select"
                 className="mb-2"
-                value={productStore.selectedColor?.id || ''}
+                value={productStore.selectedCategory?.id || ''}
                 onChange={(e) => {
-                    if (e.target.value === "") {
-                        productStore.setSelectedColor("");
+                    if (e.target.value === '') {
+                        productStore.setSelectedCategory('');
+                    } else {
+                        const selectedCategory = productStore.categories.find(
+                            (category) => category.id === +e.target.value
+                        );
+                        productStore.setSelectedCategory(selectedCategory);
                     }
-                    const selectedColor = productStore.colors.find(color => color.id === +e.target.value);
-                    productStore.setSelectedColor(selectedColor);
                 }}
             >
-                <option value="">Все цвета</option>
-                {Array.isArray(productStore.colors) && productStore.colors.length > 0 ? (
-                    productStore.colors.map((color) => (
-                        <option key={color.id || color} value={color.id || color}>
-                            {color.name || color}
+                <option value="">Все</option>
+                {Array.isArray(productStore.categories) && productStore.categories.length > 0 ? (
+                    productStore.categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
                         </option>
                     ))
                 ) : (
-                    <option value="">Нет доступных цветов</option>
+                    <option value="">Нет категорий</option>
                 )}
             </Form.Control>
 
+
+            {/*<h5 className="fw-bold ps-1 mb-1">Бренды</h5>*/}
+            {/*<ListGroup className="mb-2">*/}
+            {/*    <ListGroup.Item*/}
+            {/*        className={`filterPanel-item ${'' === productStore.selectedBrand ? 'active' : ''}`}*/}
+            {/*        onClick={() => productStore.setSelectedBrand('')}*/}
+            {/*    >*/}
+            {/*        Все бренды*/}
+            {/*    </ListGroup.Item>*/}
+            {/*    {Array.isArray(productStore.brands) && productStore.brands.length > 0 ? (*/}
+            {/*        productStore.brands.map((brand) => (*/}
+            {/*            <ListGroup.Item*/}
+            {/*                key={brand.id || brand}*/}
+            {/*                className={`filterPanel-item ${brand === productStore.selectedBrand ? 'active' : ''}`}*/}
+            {/*                onClick={() => productStore.setSelectedBrand(brand)}*/}
+            {/*            >*/}
+            {/*                {brand.name || brand}*/}
+            {/*            </ListGroup.Item>*/}
+            {/*        ))*/}
+            {/*    ) : (*/}
+            {/*        <ListGroup.Item className="filterPanel-item">Нет брендов</ListGroup.Item>*/}
+            {/*    )}*/}
+            {/*</ListGroup>*/}
+
+            <h5 className="fw-bold ps-1 mb-1">Бренды</h5>
+            <div className="max-h-32 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
+                <Form.Check
+                    type="radio"
+                    id="brand-all"
+                    label="Все бренды"
+                    checked={productStore.selectedBrand === ""}
+                    onChange={() => productStore.setSelectedBrand("")}
+                />
+                {Array.isArray(productStore.brands) && productStore.brands.length > 0 ? (
+                    productStore.brands.map((brand) => (
+                        <Form.Check
+                            key={brand.id || brand}
+                            type="radio" // Изменено на radio
+                            id={`brand-${brand.id}`}
+                            label={brand.name || brand}
+                            checked={productStore.selectedBrand === brand} // Проверяем, выбран ли бренд
+                            onChange={() => {
+                                console.log("Бренд ", brand.id);
+                                productStore.setSelectedBrand(brand); // Устанавливаем выбранный бренд
+                            }}
+                        />
+                    ))
+                ) : (
+                    <p>Нет доступных брендов</p>
+                )}
+            </div>
+
+
+            <h5 className="fw-bold ps-1 mb-1">Цвет</h5>
+            <div className="max-h-32 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
+                <Form.Check
+                    type="radio"
+                    id="color-all"
+                    label="Все цвета"
+                    checked={productStore.selectedColor === ""}
+                    onChange={() => productStore.setSelectedColor("")}
+                />
+                {Array.isArray(productStore.colors) && productStore.colors.length > 0 ? (
+                    productStore.colors.map((color) => (
+                        <Form.Check
+                            key={color.id || color}
+                            type="radio" // Изменено на radio
+                            id={`color-${color.id}`}
+                            label={color.name || color}
+                            checked={productStore.selectedColor === color} // Проверяем, выбран ли цвет
+                            onChange={() => {
+                                console.log("Цвет ", color.id);
+                                productStore.setSelectedColor(color); // Устанавливаем выбранный цвет
+                            }}
+                        />
+                    ))
+                ) : (
+                    <p>Нет доступных цветов</p>
+                )}
+            </div>
+
+
             <h5 className="fw-bold ps-1 mb-1">Размер</h5>
-            <div className="max-h-36 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
+            <div className="max-h-32 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
                 {Array.isArray(productStore.sizes) && productStore.sizes.length > 0 ? (
                     productStore.sizes.map((size) => (
                         <Form.Check
@@ -140,11 +197,11 @@ const FilterPanel = observer(() => {
 
             <h5 className="fw-bold ps-1 mb-1">Цена</h5>
             <Row className="mb-2">
-            <Col>
+                <Col>
                     <Form.Control
                         type="number"
                         placeholder="Мин"
-                        value={minPrice || ''}
+                        value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
                     />
                 </Col>

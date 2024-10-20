@@ -73,29 +73,39 @@ export const fetchProfile = async () => {
 };
 
 // Метод для получения всех адресов пользователя
-export const fetchAddresses = async (userId) => {
-    const response = await $authHost.get(`api/Address/get_by_user_id`, {
-        params: { userId }
-    });
+export const fetchAddresses = async () => {
+    const response = await $authHost.get(`api/Address/me`);
     return response.data;
 };
 
 // Метод для получения всех заказов пользователя
 export const fetchOrders = async (userId) => {
-    const response = await $authHost.get(`api/Order/get_by_user_id`, {
-        params: { userId }
-    });
+    const response = await $authHost.get(`api/Order/me`)
     return response.data;
 };
 
 export const createOrder = async (paymentIntentId) => {
-    const {data} = await $authHost.post('api/payment/create_order', {paymentIntentId} );
+    const {data} = await $authHost.post('api/order/create_order', {paymentIntentId} );
     return data;
 }
 
-export const fetchReviews = async (userId) => {
-    const response = await $authHost.get(`api/Review/get_by_user_id`, {
-        params: { userId }
+export const fetchReviews = async (productId) => {
+    const response = await $authHost.get(`api/Review/`, {
+        params: { productId }
     });
-    return response.data;
+    return response;
 }
+
+export const submitReview = async ({ text, rating, productId, userId }) => {
+    try {
+        await $authHost.post('api/review', {
+            text,
+            rating,
+            productId,
+            UserId: userId,
+        });
+    } catch (error) {
+        console.error("Ошибка при отправке отзыва:", error);
+        throw error; // Если нужно обработать ошибку на уровне вызова
+    }
+};

@@ -5,9 +5,13 @@ import NavBar from "./components/NavBar";
 import {observer} from "mobx-react-lite";
 import Footer from './components/Footer';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const App = observer(() => {    
     return (
         <div className="flex flex-col min-h-screen">
+                <ToastContainer /> {/*для уведомлений*/}
                 <BrowserRouter>
                     <NavBar/>
                     <AppRouter/>

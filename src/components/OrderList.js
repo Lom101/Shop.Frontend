@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import OrderItem from './OrderItem';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
@@ -6,6 +6,10 @@ import {Context} from "../index";
 const OrderList  = observer (() => {
 
     const {userStore} = useContext(Context);
+    useEffect(() => {
+        userStore.loadInitialData();
+    }, []);
+
 
     return (
         <div className="container mb-5 p-5">

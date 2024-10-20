@@ -6,7 +6,7 @@ export default class UserStore {
     constructor() {
         this._isAuth = false;
         this._user = null;
-        this._addresses = [];
+        // this._addresses = [];
         this._orders = [];
         this.loadInitialData();
         makeAutoObservable(this);
@@ -27,9 +27,9 @@ export default class UserStore {
         this._user = user;
     }
 
-    setAddresses(addresses) {
-        this._addresses = addresses;
-    }
+    // setAddresses(addresses) {
+    //     this._addresses = addresses;
+    // }
 
     setOrders(orders) {
         this._orders = orders;
@@ -48,15 +48,23 @@ export default class UserStore {
     async fetchUserData() {
         const userId = this.user.id;
 
+        // // Проверяем, является ли пользователь администратором
+        // if (!this.isAdmin()) {
+        //     try {
+        //         // Загружаем адреса только для не-администраторов
+        //         const addresses = await fetchAddresses();
+        //         this.setAddresses(addresses);
+        //     } catch (error) {
+        //         console.error('Ошибка при загрузке адресов:', error);
+        //     }
+        // }
+
         try {
-            const [addresses, orders] = await Promise.all([
-                fetchAddresses(userId),
-                fetchOrders(userId),
-            ]);
-            this.setAddresses(addresses);
+            // Загружаем заказы
+            const orders = await fetchOrders();
             this.setOrders(orders);
         } catch (error) {
-            console.error('Ошибка при загрузке данных пользователя:', error);
+            console.error('Ошибка при загрузке заказов:', error);
         }
     }
 
@@ -75,9 +83,9 @@ export default class UserStore {
         return this._user;
     }
 
-    get addresses() {
-        return this._addresses;
-    }
+    // get addresses() {
+    //     return this._addresses;
+    // }
 
     get orders() {
         return this._orders;

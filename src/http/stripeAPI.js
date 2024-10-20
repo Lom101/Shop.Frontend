@@ -11,7 +11,7 @@ export const createPaymentIntent = async (userId, cartItems) => {
         }));
 
         // Send the transformed cart items (orderItems) to the backend
-        const { data } = await $authHost.post(`api/payment/create-payment-intent`, {userId, orderItems });
+        const { data } = await $authHost.post(`api/order/create-payment-intent`, {userId, orderItems });
         console.log(data);
         return data;  // Server should return an object with clientSecret
     } catch (error) {

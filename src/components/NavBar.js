@@ -42,8 +42,8 @@ const NavBar = observer(() => {
                     <Nav.Link
                         className="transition-transform transform hover:scale-105 duration-200"
                         onClick={() => {
-                            productStore.setSelectedCategory(findCategoryByName("Women's"));
-                            navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                            // productStore.setSelectedCategory(findCategoryByName("Women's"));
+                            navigate(`${PRODUCT_LIST_ROUTE}?category=1`); // Перенаправляем на страницу с продуктами
                         }}
                     >
                         Women
@@ -52,8 +52,8 @@ const NavBar = observer(() => {
                     <Nav.Link
                         className="transition-transform transform hover:scale-105 duration-200"
                         onClick={() => {
-                            productStore.setSelectedCategory(findCategoryByName("Men's"));
-                            navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                            // productStore.setSelectedCategory(findCategoryByName("Men's"));
+                            navigate(`${PRODUCT_LIST_ROUTE}?category=2`); // Перенаправляем на страницу с продуктами
                         }}
                     >
                         Men
@@ -62,8 +62,8 @@ const NavBar = observer(() => {
                     <Nav.Link
                         className="transition-transform transform hover:scale-105 duration-200"
                         onClick={() => {
-                            productStore.setSelectedCategory(findCategoryByName("Children's"));
-                            navigate(PRODUCT_LIST_ROUTE); // Перенаправляем на страницу с продуктами
+                            // productStore.setSelectedCategory(findCategoryByName("Children's"));
+                            navigate(`${PRODUCT_LIST_ROUTE}?category=3`); // Перенаправляем на страницу с продуктами
                         }}
                     >
                         Kids

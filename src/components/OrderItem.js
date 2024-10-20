@@ -1,8 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Button, Row, Col, Badge, ListGroup, Form } from 'react-bootstrap';
+import { Card, Button, Row, Col, Badge, ListGroup, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import {Context} from "../index";
+import { Context } from "../index";
+import { fetchReviews, submitReview } from "../http/userAPI";
 
 // Сопоставление статусов
 const OrderStatusMap = {
@@ -18,13 +19,14 @@ const OrderItem = ({ order }) => {
     const [text, setText] = useState('');
     const [rating, setRating] = useState(5); // По умолчанию 5 звезд
     const [selectedProductId, setSelectedProductId] = useState(null);
+    const [showModal, setShowModal] = useState(false); // Состояние для управления модальным окном
 
-    const {userStore} = useContext(Context);
+    const { userStore } = useContext(Context);
 
     // Функция для проверки существующего отзыва
     const checkExistingReview = async (productId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/comment?productId=${productId}&userId=${userStore.user.id}`);
+            const response = await fetchReviews(productId);
             setExistingReview(response.data);
         } catch (error) {
             console.error("Ошибка при получении отзыва:", error);
@@ -44,20 +46,29 @@ const OrderItem = ({ order }) => {
         const userId = userStore.user.id;
 
         try {
-            await axios.post('http://localhost:5000/api/comment', {
+            await submitReview({
                 text,
                 rating,
                 productId: selectedProductId,
-                UserId: userId, // Include UserId
+                userId,
             });
             // Сбросить форму
             setText('');
             setRating(5);
+            setShowModal(false); // Закрыть модальное окно
             // Получить новый отзыв
             checkExistingReview(selectedProductId);
         } catch (error) {
             console.error("Ошибка при отправке отзыва:", error);
         }
+    };
+
+    const handleShowModal = (productId) => {
+        setSelectedProductId(productId);
+        setText('');
+        setExistingReview(null); // Очистить предыдущие отзывы
+        checkExistingReview(productId); // Получить отзывы для выбранного товара
+        setShowModal(true); // Открыть модальное окно
     };
 
     return (
@@ -111,58 +122,57 @@ const OrderItem = ({ order }) => {
                                 </span>
                             </div>
                             <span className="fw-bold font-bold">Итого: {item.totalPrice} руб.</span>
-                            <Button variant="link" onClick={() => {
-                                setSelectedProductId(item.model.id);
-                                setText('');
-                                setExistingReview(null); // Очистить предыдущие отзывы
-                                // Получить отзывы для выбранного товара
-                                checkExistingReview(item.model.id);
-                            }}>
+                            <Button variant="link" onClick={() => handleShowModal(item.model.productId)}>
                                 Отзывы
                             </Button>
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
-                {/* Форма для отправки отзыва */}
-                {selectedProductId && !existingReview && (
-                    <Form onSubmit={handleReviewSubmit} className="mt-4">
-                        <Form.Group controlId="reviewText">
-                            <Form.Label>Ваш отзыв</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={text}
-                                onChange={(e) => setText(e.target.value)}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="reviewRating">
-                            <Form.Label>Рейтинг</Form.Label>
-                            <Form.Control
-                                as="select"
-                                value={rating}
-                                onChange={(e) => setRating(parseInt(e.target.value))}
-                            >
-                                {[1, 2, 3, 4, 5].map((rate) => (
-                                    <option key={rate} value={rate}>{rate}</option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                        <Button variant="primary" type="submit">
-                            Оставить отзыв
-                        </Button>
-                    </Form>
-                )}
-                {/* Отображение существующего отзыва */}
-                {existingReview && (
-                    <div className="mt-4">
-                        <h6>Ваш отзыв:</h6>
-                        <div>
-                            {'★'.repeat(existingReview.rating)}{'☆'.repeat(5 - existingReview.rating)}
-                            <p>{existingReview.text}</p>
-                        </div>
-                    </div>
-                )}
+                {/* Модальное окно для отправки отзыва */}
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Оставить отзыв</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {existingReview ? (
+                            <div>
+                                <h6>Ваш отзыв:</h6>
+                                <div>
+                                    {'★'.repeat(existingReview.rating)}{'☆'.repeat(5 - existingReview.rating)}
+                                    <p>{existingReview.text}</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <Form onSubmit={handleReviewSubmit}>
+                                <Form.Group controlId="reviewText">
+                                    <Form.Label>Ваш отзыв</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={text}
+                                        onChange={(e) => setText(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="reviewRating">
+                                    <Form.Label>Рейтинг</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        value={rating}
+                                        onChange={(e) => setRating(parseInt(e.target.value))}
+                                    >
+                                        {[1, 2, 3, 4, 5].map((rate) => (
+                                            <option key={rate} value={rate}>{rate}</option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+                                <Button variant="primary" type="submit">
+                                    Оставить отзыв
+                                </Button>
+                            </Form>
+                        )}
+                    </Modal.Body>
+                </Modal>
             </Card.Body>
         </Card>
     );

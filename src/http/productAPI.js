@@ -62,3 +62,10 @@ export const fetchFilteredPagedProducts = async (
 
     return data;
 };
+
+export const fetchReviewsOnProductPage = async (productId) => {
+    const response = await $authHost.get(`api/Review/all`, {
+        params: { productId }
+    });
+    return response.data;
+}
