@@ -20,7 +20,7 @@ FROM nginx:stable-alpine
 # Копируем билд приложения в директорию nginx
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Копируем файл конфигурации nginx (опционально)
+# Копируем файл конфигурации nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Экспонируем порт
