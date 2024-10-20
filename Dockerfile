@@ -1,9 +1,7 @@
 # Используем официальный образ Node.js для сборки
 FROM node:18 AS build
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
-
 # Копируем файл package.json и package-lock.json в контейнер
 COPY package*.json ./
 
@@ -13,7 +11,7 @@ RUN npm install
 # Копируем все файлы проекта в контейнер
 COPY . .
 
-# Собираем приложение
+# Собираем приложени
 RUN npm run build
 
 # Используем nginx для сервировки статических файлов
@@ -23,7 +21,7 @@ FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Копируем файл конфигурации nginx (опционально)
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Экспонируем порт
 EXPOSE 80
