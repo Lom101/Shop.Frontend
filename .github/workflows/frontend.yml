@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --build-arg REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} \
+          docker build \
           -t ${{ secrets.DOCKER_USERNAME }}/shop_frontend:latest .
 
       - name: Push Docker image
