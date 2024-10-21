@@ -3,7 +3,7 @@ name: Build, Push and Update Frontend
 on:
   push:
     branches:
-      - main  # или другой основной ветвь
+      - main
 
 jobs:
   build:
