@@ -13,9 +13,6 @@ RUN npm install
 # Копируем весь исходный код приложения в рабочую директорию
 COPY . .
 
-# Установите переменные окружения
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
-
 # Собираем production-версию приложения
 RUN npm run build
 
