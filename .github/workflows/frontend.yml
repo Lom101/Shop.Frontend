@@ -25,7 +25,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push yourusername/shop_frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/shop_frontend:latest
 
       - name: SSH to VPS and pull latest Docker image
         uses: appleboy/scp-action@master
