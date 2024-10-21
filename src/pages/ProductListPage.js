@@ -21,6 +21,7 @@ const ProductListPage = observer (() => {
             productStore.setColors(data.colors);
             productStore.setMinPrice(data.minPrice);
             productStore.setMaxPrice(data.maxPrice);
+            console.log(data)
             // setLoading(false); // Данные загружены, убираем индикатор загрузки
 
             // Установите загрузку в false с задержкой
