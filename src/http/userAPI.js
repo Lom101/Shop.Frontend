@@ -2,30 +2,41 @@ import {$host, $authHost} from './index';
 import { jwtDecode } from 'jwt-decode';
 
 export const registration = async (email, username, password) => {
-      const response = await $host.post('api/Auth/registration', { email, password });
-      const { token } = response.data;
-      localStorage.setItem('authToken', token);
-      return jwtDecode(token);
+    const response = await $host.post('api/Auth/registration', { email, username, password });
+
+    if (!response) {
+      throw new Error(`HTTP ошибка: ${response.status}`);
+    }
+
+    const accessToken = response.data.token;
+    const refreshToken = response.data.refreshToken;
+
+    localStorage.setItem('authToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+
+    console.log("токен - ", localStorage.getItem('authToken'));
+
+    return jwtDecode(accessToken);
 };
 
 export const login = async (email, password) => {
-        const response = await $host.post('api/Auth/login', { email, password });
+    const response = await $host.post('api/Auth/login', { email, password });
 
-        if (!response) {
-        throw new Error(`HTTP ошибка: ${response.status}`);
-        }
+    if (!response) {
+    throw new Error(`HTTP ошибка: ${response.status}`);
+    }
 
-        console.log("токены", response.data);
+    console.log("токены", response.data);
 
-        const accessToken = response.data.token;
-        const refreshToken = response.data.refreshToken;
+    const accessToken = response.data.token;
+    const refreshToken = response.data.refreshToken;
 
-        localStorage.setItem('authToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('authToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
 
-        console.log("токен - ", localStorage.getItem('authToken'));
+    console.log("токен - ", localStorage.getItem('authToken'));
 
-        return jwtDecode(accessToken);
+    return jwtDecode(accessToken);
 };
 // error.response.data.errors[0]
 

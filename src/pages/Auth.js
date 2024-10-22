@@ -16,6 +16,7 @@ const Auth = observer (() => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
 
     const [error, setError] = useState(null); // Состояние для хранения ошибки
 
@@ -25,7 +26,7 @@ const Auth = observer (() => {
             if(isLogin){
                await login(email, password)
             } else {
-               await registration(email, email.split("@")[0], password);
+               await registration(email, username, password);
             }
 
             const token = localStorage.getItem('authToken');
@@ -37,17 +38,20 @@ const Auth = observer (() => {
                 const userData = {
                     id: decoded.id,
                     email: decoded.email,
-                    // name: decoded.name
+                    name: decoded.name
                 };
                 userStore.setUser(userData); // Установите данные пользователя в userStore
             }
 
-            userStore.setUser(true); // userStore
             userStore.setIsAuth(true);   
             navigate(MAIN_ROUTE);
         } catch (error) {
             console.error(error);
-            setError(error.response.data.errors[0] || error.response.data.errors.Username[0]); // Устанавливаем сообщение об ошибке
+            setError(
+                error.response?.data?.errors[0] ||
+                error.response?.data?.errors?.Username[0] ||
+                'Произошла ошибка'
+            );
         }
     };
 
@@ -69,6 +73,14 @@ const Auth = observer (() => {
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                             />
+                            {!isLogin && (
+                                <Form.Control
+                                    className="mt-3"
+                                    placeholder="Введите ваше имя пользователя..."
+                                    value={username}
+                                    onChange={e => setUsername(e.target.value)}
+                                />
+                            )}
                             <Form.Control
                                 className="mt-3"
                                 placeholder="Введите ваш пароль..."

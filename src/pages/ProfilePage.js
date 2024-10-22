@@ -45,6 +45,9 @@ const ProfilePage = () => {
                             <h1 className=" text-xl font-bold ">Email:</h1> <h1>{profile.email}</h1>
                         </Card.Text>
                         <Card.Text className="text-center">
+                            <h1 className="text-xl font-bold ">Username:</h1> <h1>{profile.username}</h1>
+                        </Card.Text>
+                        <Card.Text className="text-center">
                             <h1 className="text-xl font-bold ">User ID:</h1> <h1>{profile.userId}</h1>
                         </Card.Text>
                         <div className="text-center">

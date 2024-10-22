@@ -1,18 +1,18 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaVk, FaTelegram, FaGithub } from 'react-icons/fa';
 
 const Footer = () => {
     return (
         <footer className="bg-gradient-to-r from-gray-800 to-black text-white py-5 mt-auto">
             <Container>
                 <Row className="justify-content-center">
-                    <Col md={4} className="text-center mb-4 md:mb-0">
+                    <Col xs={12} md={4} className="text-center mb-4">
                         <h5 className="text-xl font-semibold mb-3">Контакты</h5>
                         <p className="mb-1">📞 +7 (999) 999-9999</p>
-                        <p>✉ info@company.com</p>
+                        <p>✉ shakirov.bulat.contact@gmail.com</p>
                     </Col>
-                    <Col md={4} className="text-center mb-4 md:mb-0">
+                    <Col xs={12} md={4} className="text-center mb-4">
                         <h5 className="text-xl font-semibold mb-3">Полезные ссылки</h5>
                         <ul className="list-unstyled space-y-2">
                             <li>
@@ -32,23 +32,23 @@ const Footer = () => {
                             </li>
                         </ul>
                     </Col>
-                    <Col md={4} className="text-center">
+                    <Col xs={12} md={4} className="text-center">
                         <h5 className="text-xl font-semibold mb-3">Следите за нами</h5>
-                        <div className="flex justify-center space-x-4 mt-2">
-                            <a href="https://facebook.com" className="text-white transition-transform transform hover:scale-110 duration-300">
-                                <FaFacebook size={28} />
+                        <div className="d-flex justify-content-center space-x-4 mt-2">
+                            <a href="https://vk.com/bulat_letov" className="text-white transition-transform transform hover:scale-110 duration-300" target="_blank" rel="noopener noreferrer">
+                                <FaVk size={28} />
                             </a>
-                            <a href="https://twitter.com" className="text-white transition-transform transform hover:scale-110 duration-300">
-                                <FaTwitter size={28} />
+                            <a href="https://t.me/BulatShakirov0" className="text-white transition-transform transform hover:scale-110 duration-300" target="_blank" rel="noopener noreferrer">
+                                <FaTelegram size={28} />
                             </a>
-                            <a href="https://instagram.com" className="text-white transition-transform transform hover:scale-110 duration-300">
-                                <FaInstagram size={28} />
+                            <a href="https://github.com/Lom101" className="text-white transition-transform transform hover:scale-110 duration-300" target="_blank" rel="noopener noreferrer">
+                                <FaGithub size={28} />
                             </a>
                         </div>
                     </Col>
                 </Row>
                 <Row>
-                    <Col className="text-center mt-5">
+                    <Col xs={12} className="text-center mt-5">
                         <p className="mb-0">&copy; {new Date().getFullYear()} Магазин Кроссовок. Все права защищены.</p>
                         <p>
                             <a href="/privacy-policy" className="text-white transition-colors duration-300 hover:text-gray-400">Политика конфиденциальности</a> |
