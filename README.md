@@ -17,6 +17,6 @@
 1. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/Lom101/Shop.Frontend.git
-  ```
-
+   ```
+   
 ![123](https://github.com/user-attachments/assets/f1f7d298-2cd4-4d73-8f55-0b57ca77b474)
