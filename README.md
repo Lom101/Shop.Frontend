@@ -19,4 +19,4 @@
    git clone https://github.com/Lom101/Shop.Frontend.git
   ```
 
-![Снимок экрана 2024-10-24 005719](https://github.com/user-attachments/assets/74c175e8-9760-4511-ae03-187a2236c965)
+![123](https://github.com/user-attachments/assets/f1f7d298-2cd4-4d73-8f55-0b57ca77b474)
