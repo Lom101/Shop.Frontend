@@ -6,8 +6,7 @@ import CheckoutForm from "../components/CheckoutForm";
 import {createPaymentIntent} from "../http/stripeAPI";
 import {Context} from "../index";
 
-const stripePromise = loadStripe("pk_test_51Q53yhKGJp4CXm6iZcGeA1nSqBrOUSfL9eDP3ZOPK4jNa0SnzmDKBBYHVuxqNc3VepeXyICm7mfOUSKWwmdLFPw700Exd3W2RT");
-
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const CheckoutPage= observer(() => {
     const [ clientSecret, setClientSecret ] = useState(null);

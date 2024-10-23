@@ -26,7 +26,7 @@ const AddressInput = ({ onAddressChange }) => {
     const [address, setAddress] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const inputRef = useRef(null);
-    const YANDEX_API_KEY = 'f7950ee6-c480-4c32-ac5e-f4afc63a2418';
+    const YANDEX_API_KEY = process.env.REACT_APP_YANDEX_API_KEY;
     const cache = {};
 
     useEffect(() => {

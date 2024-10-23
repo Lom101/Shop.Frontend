@@ -5,8 +5,8 @@ import React from 'react';
 import {Context} from "../index";
 
 
-// вынужденная мера, в будущем нужно создать context для хранения stripePromise и тд
-const stripePromise = loadStripe("pk_test_51Q53yhKGJp4CXm6iZcGeA1nSqBrOUSfL9eDP3ZOPK4jNa0SnzmDKBBYHVuxqNc3VepeXyICm7mfOUSKWwmdLFPw700Exd3W2RT");
+// TODO: в будущем нужно создать context для хранения stripePromise и тд, но это не точно
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 function CompletionPaymentPage () {
     const [ messageBody, setMessageBody ] = useState('');
