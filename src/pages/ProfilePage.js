@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {fetchProfile} from "../http/userAPI";
 import { Container, Card, Alert, Button } from 'react-bootstrap';
-import InterestingButton from "../components/InterestingButton";
 
 const ProfilePage = () => {
     const [profile, setProfile] = useState(null);
@@ -50,9 +49,6 @@ const ProfilePage = () => {
                         <Card.Text className="text-center">
                             <h1 className="text-xl font-bold ">User ID:</h1> <h1>{profile.userId}</h1>
                         </Card.Text>
-                        <div className="text-center">
-                            <InterestingButton/>
-                        </div>
                     </Card.Body>
                 </Card>
             ) : (

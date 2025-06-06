@@ -86,30 +86,6 @@ const FilterPanel = observer(() => {
                 )}
             </Form.Control>
 
-
-            {/*<h5 className="fw-bold ps-1 mb-1">Бренды</h5>*/}
-            {/*<ListGroup className="mb-2">*/}
-            {/*    <ListGroup.Item*/}
-            {/*        className={`filterPanel-item ${'' === productStore.selectedBrand ? 'active' : ''}`}*/}
-            {/*        onClick={() => productStore.setSelectedBrand('')}*/}
-            {/*    >*/}
-            {/*        Все бренды*/}
-            {/*    </ListGroup.Item>*/}
-            {/*    {Array.isArray(productStore.brands) && productStore.brands.length > 0 ? (*/}
-            {/*        productStore.brands.map((brand) => (*/}
-            {/*            <ListGroup.Item*/}
-            {/*                key={brand.id || brand}*/}
-            {/*                className={`filterPanel-item ${brand === productStore.selectedBrand ? 'active' : ''}`}*/}
-            {/*                onClick={() => productStore.setSelectedBrand(brand)}*/}
-            {/*            >*/}
-            {/*                {brand.name || brand}*/}
-            {/*            </ListGroup.Item>*/}
-            {/*        ))*/}
-            {/*    ) : (*/}
-            {/*        <ListGroup.Item className="filterPanel-item">Нет брендов</ListGroup.Item>*/}
-            {/*    )}*/}
-            {/*</ListGroup>*/}
-
             <h5 className="fw-bold ps-1 mb-1">Бренды</h5>
             <div className="max-h-32 overflow-y-auto border border-gray-300 rounded p-2 mb-3">
                 <Form.Check
@@ -196,7 +172,7 @@ const FilterPanel = observer(() => {
             </div>
 
             <h5 className="fw-bold ps-1 mb-1">Цена</h5>
-            <Row className="mb-2">
+            <Row className="mb-4">
                 <Col>
                     <Form.Control
                         type="number"
@@ -215,14 +191,7 @@ const FilterPanel = observer(() => {
                 </Col>
             </Row>
 
-            <h5 className="fw-bold ps-1 mb-1">В наличии</h5>
-            <Form.Check
-                className="mb-2"
-                type="checkbox"
-                label="Показать только товары в наличии"
-                checked={productStore.selectedInStock || false}
-                onChange={(e) => productStore.setSelectedInStock(e.target.checked)}
-            />
+            
             <Button variant="primary" className="w-100 mb-2 shadow" onClick={clearFilters}>Очистить фильтры</Button>
 
         </div>

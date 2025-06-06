@@ -6,7 +6,6 @@ import { PRODUCT_ROUTE } from "../utils/consts";
 import { Context } from "../index";
 import { FaStar } from 'react-icons/fa';
 import { FaShoppingCart } from 'react-icons/fa';
-import Compressor from "compressorjs";
 
 const ProductItem = ({ product }) => {
     const navigate = useNavigate();
@@ -67,70 +66,33 @@ const ProductItem = ({ product }) => {
         setSelectedSize(size);
     };
 
-    const [compressedImageUrl, setCompressedImageUrl] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    // ?v=@DateTime.UtcNow.Ticks
-    const imageUrl = `${process.env.REACT_APP_API_URL}/${product.models[0].photos[0].url}?v=${Date.now()}`;
-    useEffect(() => {
-        const fetchImageAsBlob = async (url) => {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Network response was not ok");
-            return await response.blob();
-        };
-
-        const compressImage = async () => {
-            try {
-                const imageBlob = await fetchImageAsBlob(imageUrl); // Fetch image as Blob
-                const compressedBlob = await new Promise((resolve, reject) => {
-                    new Compressor(imageBlob, {
-                        quality: 0.6,
-                        maxWidth: 800,
-                        maxHeight: 800,
-                        mimeType: "image/jpeg",
-                        success(result) {
-                            resolve(result);
-                        },
-                        error(error) {
-                            reject(error);
-                        },
-                    });
-                });
-
-                setCompressedImageUrl(URL.createObjectURL(compressedBlob));
-                setIsLoading(false);
-            } catch (error) {
-                console.error(error);
-                setIsLoading(false);
-            }
-        };
-        compressImage();
-    }, []); // Make sure to include imageUrl as a dependency
+    //const [isLoading, setIsLoading] = useState(true);
 
     return (
         <Col md={3} className="mb-3">
 
-                {isLoading ? (
-                    <Card style={{ width: '18rem' }}>
-                        {/* Используем Placeholder для изображения */}
-                        <div style={{ height: '200px', position: 'relative' }}>
-                            <Placeholder as="div" animation="wave" style={{ height: '100%', backgroundColor: '#e0e0e0' }} />
-                        </div>
-                        <Card.Body>
-                            <Placeholder as={Card.Title} animation="wave">
-                                <Placeholder xs={6} />
-                            </Placeholder>
-                            <Placeholder as={Card.Text} animation="wave">
-                                <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-                                <Placeholder xs={6} /> <Placeholder xs={8} />
-                            </Placeholder>
-                        </Card.Body>
-                    </Card>
-                ) : (
+                {/*{isLoading ? (*/}
+                {/*    <Card style={{ width: '18rem' }}>*/}
+                {/*        /!* Используем Placeholder для изображения *!/*/}
+                {/*        <div style={{ height: '200px', position: 'relative' }}>*/}
+                {/*            <Placeholder as="div" animation="wave" style={{ height: '100%', backgroundColor: '#e0e0e0' }} />*/}
+                {/*        </div>*/}
+                {/*        <Card.Body>*/}
+                {/*            <Placeholder as={Card.Title} animation="wave">*/}
+                {/*                <Placeholder xs={6} />*/}
+                {/*            </Placeholder>*/}
+                {/*            <Placeholder as={Card.Text} animation="wave">*/}
+                {/*                <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}*/}
+                {/*                <Placeholder xs={6} /> <Placeholder xs={8} />*/}
+                {/*            </Placeholder>*/}
+                {/*        </Card.Body>*/}
+                {/*    </Card>* /}
+                {/*) : (*/}
                     <Card className='product-item shadow-sm border-0 transform transition-transform duration-200 hover:scale-105' onClick={handleCardClick}>
 
                     <Card.Img
                         variant="top"
-                        src={compressedImageUrl}
+                        src={`${process.env.REACT_APP_API_URL}/${product.models[0].photos[0].url}?v=${Date.now()}`}
                         alt={product.name}
                         className="cursor-pointer"
                         style={{
@@ -139,52 +101,50 @@ const ProductItem = ({ product }) => {
                             objectFit: 'cover'
                         }}
                     />
-                <Card.Body>
-                    <Card.Text className="cursor-pointer">{product.name}</Card.Text>
-                    <Card.Title className="cursor-pointer">{getPriceRange(product.models)}</Card.Title>
+                    <Card.Body>
+                        <Card.Text className="cursor-pointer">{product.name}</Card.Text>
+                        <Card.Title className="cursor-pointer">{getPriceRange(product.models)}</Card.Title>
 
-                    <div className="d-flex align-items-center">
-                        {product.averageRating > 0 ? (
-                            <>
-                                <div className="cursor-pointer d-flex align-items-center">
-                                    <span>{product.averageRating.toFixed(1)}</span>
-                                    <FaStar className="text-warning ms-1"/>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="cursor-pointer d-flex align-items-center">
-                                    <FaStar className="text-gray-400 ms-1 me-1"/> {/* Серая звездочка */}
-                                    <span className="text-gray-400">Нет отзывов</span> {/* Текст при отсутствии отзывов */}
-                                </div>
-                            </>
-                        )}
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        {/* Список размеров */}
-                        <div>
-                            {availableSizes.map(size => (
-                                <Badge  key={size.id} pill bg="dark" className="cursor-pointer me-1 mb-1">
-                                    {size.name}
-                                </Badge>
-                            ))}
+                        <div className="d-flex align-items-center">
+                            {product.averageRating > 0 ? (
+                                <>
+                                    <div className="cursor-pointer d-flex align-items-center">
+                                        <span>{product.averageRating.toFixed(1)}</span>
+                                        <FaStar className="text-warning ms-1"/>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="cursor-pointer d-flex align-items-center">
+                                        <FaStar className="text-gray-400 ms-1 me-1"/> {/* Серая звездочка */}
+                                        <span className="text-gray-400">Нет отзывов</span> {/* Текст при отсутствии отзывов */}
+                                    </div>
+                                </>
+                            )}
                         </div>
 
-                        {/* Иконка корзины */}
-                        <div
-                            className="me-3 bg-gray-800 text-white p-2.5 rounded-full inline-flex items-center justify-center cursor-pointer hover:bg-gray-700 transform transition-transform duration-200 hover:scale-110"
-                            onClick={handleAddToCart} // Обработчик клика
-                        >
-                            <FaShoppingCart size={24}/>
+                        <div className="flex justify-between items-center">
+                            {/* Список размеров */}
+                            <div>
+                                {availableSizes.map(size => (
+                                    <Badge  key={size.id} pill bg="dark" className="cursor-pointer me-1 mb-1">
+                                        {size.name}
+                                    </Badge>
+                                ))}
+                            </div>
+
+                            {/* Иконка корзины */}
+                            <div
+                                className="me-3 bg-gray-800 text-white p-2.5 rounded-full inline-flex items-center justify-center cursor-pointer hover:bg-gray-700 transform transition-transform duration-200 hover:scale-110"
+                                onClick={handleAddToCart} // Обработчик клика
+                            >
+                                <FaShoppingCart size={24}/>
+                            </div>
                         </div>
-                    </div>
 
-                </Card.Body>
-            </Card>
-
-                )}
-
+                    </Card.Body>
+                </Card>
+                {/*)}*/}
 
             {/* Модальное окно для выбора модели и размера */}
             <Modal show={showModal} onHide={handleCloseModal}>
